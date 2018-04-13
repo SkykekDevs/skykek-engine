@@ -1,0 +1,30 @@
+{
+  "name": "skykek-engine",
+  "version": "2.0.0",
+  "description": "skykek-engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SkykekDevs/skykek-engine.git"
+  },
+  "keywords": [
+    "skykek-engine",
+    "skykek",
+    "engine"
+  ],
+  "author": "Skykek <admin@skykek.com> (https://www.skykek.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SkykekDevs/skykek-engine/issues"
+  },
+  "homepage": "https://github.com/SkykekDevs/skykek-engine#readme",
+  "devDependencies": {
+    "jest-cli": "^20.0.4"
+  },
+  "dependencies": {
+    "immutable": "^3.8.2"
+  }
+}
