@@ -1,13 +1,13 @@
 # Keklang
 
- This is a reference manual for Keklang, the programming language used on [Skykek](https://www.skykek.com).
+ This is a reference manual for Keklang, the programming language used on Skykek.
 
 
 ## Lexical considerations
 
 ### Names
 
- Names for properties, methods, parameters, and classes can contain lowercase letters (a-z), uppercase letters (A-Z), digits (0-9), and underscores (_).
+ Names for properties, methods, parameters, and classes can contain lowercase letters (a-z), uppercase letters (A-Z), digits (0-9), and underscores (\_).
 
  The first character of a property name, a method name, or a parameter name must be a lowercase letter or an underscore.
 
@@ -47,7 +47,7 @@
 
  A value is an entity that can be manipulated by the program.
 
- The language supports the following types of values, each with its own built-in methods: [number](./number.md), [boolean](./boolean.md), [string](./string.md), [list](./list.md), [map](./map.md), [set](./set.md), [undefined](./undefined.md). All values are immutable.
+ The language supports the following types of values, each with its own built-in methods: [number][./number/], [boolean][./boolean/], [string][./string/], [list][./list/], [map][./map/], [set][./set/], [undefined][./undefined/]. All values are immutable.
 
 
 ## Expressions
@@ -409,6 +409,16 @@
 
  Built-in map methods have priority over regular methods, so the latter shouldn't be named `eq`, `ne`, `size`, `set`, `delete`, `clear`, `get`, `has`, `first`, `rest`, `keys`, `toList`, `toSet`, `toString`, or `type`. Even if you do implement for example a `get` method, any call to `get` will still be interpreted as a call to the built-in `get` method.
 
+### An example: `$.sum(list)` 
+
+ The method in the previous example merely associates a fruit name to a color. But even though graph rewriting is the only form of computation we have access to, we can still implement non-trivial methods. The main trick in Keklang is for a method to call itself with a different pattern. Here is a method that adds the elements of a list:
+
+    $.sum(list) = $.sum(list, 0)
+    $.sum(list, s) = $.sum(list, s, list.isEmpty())
+    $.sum(list, s, isEmpty: true) = s
+    $.sum(list, s, isEmpty: false) = $.sum(list.rest(), s + list.first())
+
+ The method initializes the sum `s` to 0, and then adds the elements to it one by one until the list is empty. Notice how the number of parameters varies during the computation.
 
 ### The `make` method
 
@@ -457,8 +467,11 @@
 | `sqrt(x)` | the square root of `x`
 | `tan(x)` | the tangent of `x`
 
-
-## Trees
-
- A program is a tree of classes. A tree is loaded from a DANK file. This type of file is not meant to be written by hand, but rather with the help of a software development environment like the one on Skykek.
+[./number/]: number.md
+[./boolean/]: boolean.md
+[./string/]: string.md
+[./list/]: list.md
+[./map/]: map.md
+[./set/]: set.md
+[./undefined/]: undefined.md
 

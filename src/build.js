@@ -1,6 +1,10 @@
 "use strict";
 // build.js assembles multiple objects into a tree structure.
 
+// A program is a tree of classes. A tree is loaded from a DANK file.
+// This type of file is not meant to be written by hand, but rather with
+// the help of a software development environment like the one on Skykek.
+
 const immutable = require("../src/immutable2.js");
 const Map = immutable.Map;
 
