@@ -598,10 +598,20 @@ describe("string", function() {
   it("implements length()", function() {
     expect(ev('"ababa".length()')).toEqual(5);
   });
-  it("implements match(regexp)", function() {
-    expect(ev('"abaca".match("a.")')).toEqual(List(["ab", "ac"]));
+  it("implements match(pattern)", function() {
+    expect(ev('"abaca".match("a.")')).toEqual(List(["ab"]));
+    expect(ev('"abaca".match("z.")')).toEqual(List([]));
     expect(ev('"abaca".match([])')).toEqual(undefined);
     expect(ev('"abaca".match("[")')).toEqual(undefined);
+  });
+  it("implements match(pattern, flags)", function() {
+    expect(ev('"abaca".match("a.", "")')).toEqual(List(["ab"]));
+    expect(ev('"abaca".match("z.", "")')).toEqual(List([]));
+    expect(ev('"abaca".match("a.", "g")')).toEqual(List(["ab", "ac"]));
+    expect(ev('"abaca".match([], "g")')).toEqual(undefined);
+    expect(ev('"abaca".match("[", "g")')).toEqual(undefined);
+    expect(ev('"abaca".match("a.", [])')).toEqual(undefined);
+    expect(ev('"abaca".match("a.", "z")')).toEqual(undefined);
   });
   it("implements repeat(count)", function() {
     expect(ev('"abc".repeat(2)')).toEqual("abcabc");
@@ -609,22 +619,36 @@ describe("string", function() {
     expect(ev('"abc".repeat(-1)')).toEqual(undefined);
     expect(ev('"abc".repeat(Infinity)')).toEqual(undefined);
   });
-  it("implements replace(regexp, newSubstr)", function() {
-    expect(ev('"abaabaa".replace("b.", "BX")')).toEqual("aBXabaa");
-    expect(ev('"abaabaa".replace([], "BX")')).toEqual(undefined);
-    expect(ev('"abaabaa".replace("b.", [])')).toEqual(undefined);
-    expect(ev('"abaabaa".replace("[", "BX")')).toEqual(undefined);
+  it("implements replace(newSubstr, pattern)", function() {
+    expect(ev('"ababa".replace("BA", "b.")')).toEqual("aBAba");
+    expect(ev('"ababa".replace("BA", "z.")')).toEqual("ababa");
+    expect(ev('"ababa".replace([], "b.")')).toEqual(undefined);
+    expect(ev('"ababa".replace("BA", [])')).toEqual(undefined);
+    expect(ev('"ababa".replace("BA", "[")')).toEqual(undefined);
   });
-  it("implements replaceAll(regexp, newSubstr)", function() {
-    expect(ev('"abaabaa".replaceAll("b.", "BX")')).toEqual("aBXaBXa");
-    expect(ev('"abaabaa".replaceAll([], "BX")')).toEqual(undefined);
-    expect(ev('"abaabaa".replaceAll("b.", [])')).toEqual(undefined);
-    expect(ev('"abaabaa".replaceAll("[", "BX")')).toEqual(undefined);
+  it("implements replace(newSubstr, pattern, flags)", function() {
+    expect(ev('"ababa".replace("BA", "b.", "")')).toEqual("aBAba");
+    expect(ev('"ababa".replace("<$&>", "b.", "")')).toEqual("a<ba>ba");
+    expect(ev('"ababa".replace("BA", "b.", "g")')).toEqual("aBABA");
+    expect(ev('"ababa".replace("BA", "z.", "g")')).toEqual("ababa");
+    expect(ev('"ababa".replace([], "b.", "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("BA", [], "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("BA", "[", "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("BA", "b.", "z")')).toEqual(undefined);
   });
-  it("implements search(regexp)", function() {
-    expect(ev('"abc".search("b")')).toEqual(1);
+  it("implements search(pattern)", function() {
+    expect(ev('"abcde".search("cd")')).toEqual(2);
+    expect(ev('"abcde".search("cc")')).toEqual(-1);
     expect(ev('"abc".search([])')).toEqual(undefined);
     expect(ev('"abc".search("[")')).toEqual(undefined);
+  });
+  it("implements search(pattern, flags)", function() {
+    expect(ev('"abcd\\ne".search("d$", "m")')).toEqual(3);
+    expect(ev('"abcd\\ne".search("d$", "")')).toEqual(-1);
+    expect(ev('"abcde".search([], "m")')).toEqual(undefined);
+    expect(ev('"abc".search("[", "m")')).toEqual(undefined);
+    expect(ev('"abc".search("abc", [])')).toEqual(undefined);
+    expect(ev('"abc".search("abc", "z")')).toEqual(undefined);
   });
   it("implements slice(beginIndex)", function() {
     expect(ev('"abcdef".slice(3)')).toEqual("def");
@@ -676,11 +700,19 @@ describe("string", function() {
     expect(ev('"abcdef".substring([], 5)')).toEqual(undefined);
     expect(ev('"abcdef".substring(3, [])')).toEqual(undefined);
   });
-  it("implements test(regexp)", function() {
+  it("implements test(pattern)", function() {
     expect(ev('"abcdef".test("c.e")')).toEqual(true);
     expect(ev('"abcdef".test("c.f")')).toEqual(false);
     expect(ev('"abcdef".test([])')).toEqual(undefined);
     expect(ev('"abcdef".test("[")')).toEqual(undefined);
+  });
+  it("implements test(pattern, flags)", function() {
+    expect(ev('"abc\\ndef".test("abc$", "m")')).toEqual(true);
+    expect(ev('"abc\\ndef".test("abc$", "")')).toEqual(false);
+    expect(ev('"abcdef".test([], "m")')).toEqual(undefined);
+    expect(ev('"abcdef".test("[", "m")')).toEqual(undefined);
+    expect(ev('"abcdef".test("abc", [])')).toEqual(undefined);
+    expect(ev('"abcdef".test("abc", "z")')).toEqual(undefined);
   });
   it("implements toLowerCase()", function() {
     expect(ev('"ABC".toLowerCase()')).toEqual("abc");

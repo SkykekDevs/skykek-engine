@@ -354,7 +354,18 @@ const BUILTIN = {
         if (typeof a[1] != "string") return undefined;
         var r = null;
         try {
-          r = new RegExp(a[1], "g");
+          r = new RegExp(a[1]);
+        } catch (e) {
+          return undefined;
+        }
+        return List(a[0].match(r));
+      },
+      3: function(a) {
+        if (typeof a[1] != "string") return undefined;
+        if (typeof a[2] != "string") return undefined;
+        var r = null;
+        try {
+          r = new RegExp(a[1], a[2]);
         } catch (e) {
           return undefined;
         }
@@ -377,24 +388,23 @@ const BUILTIN = {
         if (typeof a[2] != "string") return undefined;
         var r = null;
         try {
-          r = new RegExp(a[1]);
+          r = new RegExp(a[2]);
         } catch (e) {
           return undefined;
         }
-        return a[0].replace(r, a[2]);
-      }
-    },
-    replaceAll: {
-      3: function(a) {
+        return a[0].replace(r, a[1]);
+      },
+      4: function(a) {
         if (typeof a[1] != "string") return undefined;
         if (typeof a[2] != "string") return undefined;
+        if (typeof a[3] != "string") return undefined;
         var r = null;
         try {
-          r = new RegExp(a[1], "g");
+          r = new RegExp(a[2], a[3]);
         } catch (e) {
           return undefined;
         }
-        return a[0].replace(r, a[2]);
+        return a[0].replace(r, a[1]);
       }
     },
     search: {
@@ -403,6 +413,17 @@ const BUILTIN = {
         var r = null;
         try {
           r = new RegExp(a[1]);
+        } catch (e) {
+          return undefined;
+        }
+        return a[0].search(r);
+      },
+      3: function(a) {
+        if (typeof a[1] != "string") return undefined;
+        if (typeof a[2] != "string") return undefined;
+        var r = null;
+        try {
+          r = new RegExp(a[1], a[2]);
         } catch (e) {
           return undefined;
         }
@@ -473,6 +494,17 @@ const BUILTIN = {
         var r = null;
         try {
           r = new RegExp(a[1]);
+        } catch (e) {
+          return undefined;
+        }
+        return r.test(a[0]);
+      },
+      3: function(a) {
+        if (typeof a[1] != "string") return undefined;
+        if (typeof a[2] != "string") return undefined;
+        var r = null;
+        try {
+          r = new RegExp(a[1], a[2]);
         } catch (e) {
           return undefined;
         }

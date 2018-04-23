@@ -14,7 +14,7 @@
 | `s1 > s2` |  Greater than
 | `s1 >= s2` | Greater than or equal
 
-## Regular expression syntax
+## Regular expression pattern syntax
 
  When writing a regular expression in a string, the normal string escape rules still apply. In particular, you need to escape every backslash with another backslash.
 
@@ -50,19 +50,28 @@
 | (_x_) | Matches _x_ and remembers the match.
 | \\_n_ | An integer back reference to the last substring matching the _n_ parenthetical.
 | (?:_x_) | Matches _x_ but does not capture the match.
-| _x_* | Matches _x_ zero or more times.
+| _x_\* | Matches _x_ zero or more times.
 | _x_+ | Matches _x_ one or more times.
 | _x_? | Matches _x_ zero or one time.
 | _x_{_n_} | Matches exactly _n_ occurrences of _x_.
 | _x_{_n_,} | Matches at least _n_ occurrences of _x_.
 | _x_{_n_,_m_} | Matches at least _n_ and at most _m_ occurrences of _x_.
-| _x_*? | Like _x_*, but matches the smallest possible match.
+| _x_\*? | Like _x_\*, but matches the smallest possible match.
 | _x_+? | Like _x_+, but matches the smallest possible match.
 | _x_?? | Like _x_?, but matches the smallest possible match.
 | _x_{_n_,}? | Like _x_{_n_,}, but matches the smallest possible match.
 | _x_{_n_,_m_}? | Like _x_{_n_,_m_}, but matches the smallest possible match.
 | _x_(?=_y_) | Matches _x_ only if _x_ is followed by _y_.
 | _x_(?!_y_) | Matches _x_ only if _x_ is not followed by _y_.
+
+## Regular expression flags
+
+ A flag string can contain zero or more of the following flags:
+
+    Flag  Definition
+     g       global match (find all matches)
+     i       ignore case
+     m       multiline matching
 
 ## `s.get(index)`
 
@@ -96,34 +105,30 @@
 
  Returns the length of `s`.
 
-## `s.match(regexp)`
+## `s.match(pattern[, flags])`
 
- Retrieves the matches when matching `s` against a regular expression. `regexp` is a string describing the regular expression to match.
+ Retrieves the matches when matching `s` against a regular expression. `pattern` and `flags` are strings describing the regular expression.
 
 ## `s.repeat(count)`
 
  Returns a string containing the specified number of copies of `s`. `count` is the number of times to repeat `s`.
 
-## `s.replace(regexp, newSubstr)`
+## `s.replace(newSubstr, pattern[, flags])`
 
- Returns a string with the first occurrence of a regular expression in `s` replaced by a new string. `regexp` is a string describing a regular expression that matches the substring of `s` to be replaced. `newSubstr` is the string that replaces the matched substring of `s`. 
+ Returns a string with the occurrences of a regular expression in `s` replaced by a new string. `newSubstr` is the string that replaces the matched substrings of `s`. `pattern` and `flags` are strings describing the regular expression.
 
  `newSubstr` can include the following special replacement patterns:
 
-| Pattern | Inserts
+| Pattern | Effect
 | --- | ---
 | $$ | Inserts a "$".
 | $& | Inserts the matched substring.
 | $\` | Inserts the portion of the string that precedes the matched substring.
 | $' | Inserts the portion of the string that follows the matched substring.
 
-## `s.replaceAll(regexp, newSubstr)`
+## `s.search(pattern[, flags])`
 
- Returns a string with all occurrences of a regular expression in `s` replaced by a new string. `regexp` is a string describing a regular expression that matches the substrings of `s` to be replaced. `newSubstr` is the string that replaces the matched substrings of `s`. `newSubstr` can include special replacement patterns (see `replace`).
-
-## `s.search(regexp)`
-
- Returns the index of the first match of a regular expression in `s`. `regexp` is a string describing the regular expression to search for.
+ Returns the index of the first match of a regular expression in `s`. Returns -1 if no match is found. `pattern` and `flags` are strings describing the regular expression.
 
 ## `s.slice(beginIndex[, endIndex])`
 
@@ -145,9 +150,9 @@
 
  Returns a subset of `s` between one index and another, or through the end of `s`. `indexStart` is the offset (between 0 and the end of `s`) into `s` of the first character to include. `indexEnd` is the offset (between 0 and the end of `s`) into `s` of the first character **not** to include. If `indexEnd` is omitted, characters are included to the end of `s`.
 
-## `s.test(regexp)`
+## `s.test(pattern[, flags])`
 
-  Returns `true` if a given regular expression matches `s`. `regexp` is a string describing the regular expression.
+  Returns `true` if a given regular expression matches `s`. `pattern` and `flags` are strings describing the regular expression.
 
 ## `s.toLowerCase()`
 
