@@ -47,7 +47,7 @@
 
  A value is an entity that can be manipulated by the program.
 
- The language supports the following types of values, each with its own built-in methods: [number][./number/], [boolean][./boolean/], [string][./string/], [list][./list/], [map][./map/], [set][./set/], [undefined][./undefined/]. All values are immutable.
+ The language supports the following types of values, each with its own built-in methods: [number][./number], [boolean][./boolean], [string][./string], [list][./list], [map][./map], [set][./set], [undefined][./undefined]. All values are immutable.
 
 
 ## Expressions
@@ -467,11 +467,11 @@
 | `sqrt(x)` | the square root of `x`
 | `tan(x)` | the tangent of `x`
 
-[./number/]: number.md
-[./boolean/]: boolean.md
-[./string/]: string.md
-[./list/]: list.md
-[./map/]: map.md
-[./set/]: set.md
-[./undefined/]: undefined.md
+[./number]: number.md
+[./boolean]: boolean.md
+[./string]: string.md
+[./list]: list.md
+[./map]: map.md
+[./set]: set.md
+[./undefined]: undefined.md
 
