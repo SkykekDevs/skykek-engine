@@ -73,7 +73,7 @@ function fullLines(lines) {
 }
 
 // Returns the path to a class from its pathname
-// e.g. pathFromPathname("~/abc/def/") is List(["abc", "def"]).
+// e.g. pathFromPathname("/abc/def/") is List(["abc", "def"]).
 function pathFromPathname(pathname) {
   return List(pathname.match(/[a-z][a-z0-9_]*/g));
 }
