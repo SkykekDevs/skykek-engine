@@ -411,14 +411,13 @@
 
 ### An example: `$.sum(list)` 
 
- The method in the previous example merely associates a fruit name to a color. But even though graph rewriting is the only form of computation we have access to, we can still implement non-trivial methods. The main trick in Keklang is for a method to call itself with a different pattern. Here is a method that adds the elements of a list:
+ The method in the previous example merely associates a fruit name to a color. But even though graph rewriting is the only form of computation we have access to, we can still implement less trivial methods. The main trick in Keklang is for a method to call itself with a different pattern. Here is a method that adds the elements of a list:
 
-    $.sum(list) = $.sum(list, 0)
-    $.sum(list, s) = $.sum(list, s, list.isEmpty())
-    $.sum(list, s, isEmpty: true) = s
-    $.sum(list, s, isEmpty: false) = $.sum(list.rest(), s + list.first())
+    $.sum(list) = $.sum(list, list.isEmpty())
+    $.sum(list, isEmpty: true) = 0
+    $.sum(list, isEmpty: false) = list.first() + $.sum(list.rest())
 
- The method initializes the sum `s` to 0, and then adds the elements to it one by one until the list is empty. Notice how the number of parameters varies during the computation.
+ Notice how the number of parameters varies during the computation.
 
 ### The `make` method
 
