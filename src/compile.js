@@ -25,8 +25,8 @@ const makeObject = make.makeObject;
 const makeExpr = make.makeExpr;
 
 // Compiles an object from its source code.
-function compileObject(pathname, source) {
-  const name = nameFromPath(pathFromPathname(pathname));
+function compileObject(path, source) {
+  const name = nameFromPath(path);
   source = source.replace(/\\\s*\n/g, ""); // line continuation
   const lines = source.split("\n");
   const objLines = lines.filter(function(line) {
@@ -40,7 +40,7 @@ function compileObject(pathname, source) {
       renameDecl(decl, name);
       decls.push(decl);
     } catch (err) {
-      err.pathname = pathname;
+      err.classname = name;
       err.line = objLines[i];
       throw err;
     }
@@ -49,22 +49,16 @@ function compileObject(pathname, source) {
 }
 
 // Compiles an expression from a source string (e.g. '2 + 2').
-function compileExpr(pathname, line) {
-  const name = nameFromPath(pathFromPathname(pathname));
+function compileExpr(path, line) {
+  const name = nameFromPath(path);
   var expr = parseExpr(new Scanner(line));
   checkExpr(expr, {});
   renameExpr(expr, name);
   return makeExpr(expr, {});
 }
 
-// Returns the path to a class from its pathname
-// e.g. pathFromPathname("/abc/def/") is List(["abc", "def"]).
-function pathFromPathname(pathname) {
-  return List(pathname.match(/[a-z][a-z0-9_]*/g));
-}
-
 // Returns the name of a class from its path.
-// e.g. nameFromPath(List(["abc", "def"])) is "AbcDef"
+// e.g. nameFromPath(["abc", "def"]) == "AbcDef"
 function nameFromPath(path) {
   return path
     .map(function(s) {

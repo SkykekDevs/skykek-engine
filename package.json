@@ -1,10 +1,14 @@
 {
   "name": "skykek-engine",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "description": "skykek-engine",
   "main": "index.js",
   "scripts": {
     "test": "jest"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   },
   "repository": {
     "type": "git",
@@ -22,7 +26,7 @@
   },
   "homepage": "https://github.com/SkykekDevs/skykek-engine#readme",
   "devDependencies": {
-    "jest-cli": "^20.0.4"
+    "jest-cli": "^23.4.2"
   },
   "dependencies": {
     "immutable": "^3.8.2"

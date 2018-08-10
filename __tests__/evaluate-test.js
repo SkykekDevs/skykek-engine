@@ -16,7 +16,7 @@ const evaluate = evaluate_.evaluate;
 
 describe("evaluate", function() {
   const ev = function(line, tree) {
-    const expr = compileExpr("~/m/", line);
+    const expr = compileExpr(["m"], line);
     return evaluate(expr, tree);
   };
   it('throws "no matching rule found" on call with bad method name', function() {
@@ -26,7 +26,7 @@ describe("evaluate", function() {
     }).toThrow("no matching rule found");
   });
   it('throws "no matching rule found" on call with bad number of arguments', function() {
-    const obj = compileObject("~/m/", "$.m(x) = 3");
+    const obj = compileObject(["m"], "$.m(x) = 3");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(function() {
@@ -34,14 +34,14 @@ describe("evaluate", function() {
     }).toThrow("no matching rule found");
   });
   it("evaluates calls", function() {
-    const obj = compileObject("~/m/", "$.m() = 3");
+    const obj = compileObject(["m"], "$.m() = 3");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.m()", tree)).toEqual(3);
   });
   it("evaluates calls defined at run-time", function() {
     const obj = compileObject(
-      "~/m/",
+      ["m"],
       '$.m() = {"n": {1: {undefined: {"val": 4}}}}.n()'
     );
     const path = List(["m"]);
@@ -50,7 +50,7 @@ describe("evaluate", function() {
   });
   it("built-in map methods have priority over normal methods", function() {
     const obj = compileObject(
-      "~/m/",
+      ["m"],
       '$.m() = {"x": 4, "get": {2: {"x": {"val": 5}}}}.get("x")'
     );
     const path = List(["m"]);
@@ -58,41 +58,41 @@ describe("evaluate", function() {
     expect(ev("M.m()", tree)).toEqual(4);
   });
   it("objects are maps", function() {
-    const obj = compileObject("~/m/", "$.p1 = 11\n$.p2 = 22");
+    const obj = compileObject(["m"], "$.p1 = 11\n$.p2 = 22");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.size()", tree)).toEqual(2);
     expect(ev('M.get("p1")', tree)).toEqual(11);
   });
   it("evaluates global calls", function() {
-    const obj = compileObject("~/global/", "$.round(x) = #!round");
+    const obj = compileObject(["global"], "$.round(x) = #!round");
     const path = List(["global"]);
     const tree = Map.of(path, obj);
     expect(ev("round(1.8)", tree)).toEqual(2);
   });
   it("allocates number expression", function() {
-    const obj = compileObject("~/m/", "$.m() = 6");
+    const obj = compileObject(["m"], "$.m() = 6");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(6);
   });
   it("allocates string expression", function() {
-    const obj = compileObject("~/m/", '$.m() = "abc"');
+    const obj = compileObject(["m"], '$.m() = "abc"');
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual("abc");
   });
   it("allocates boolean expression", function() {
-    const obj = compileObject("~/m/", "$.m() = true");
+    const obj = compileObject(["m"], "$.m() = true");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(true);
   });
   it("allocates path expression", function() {
-    const obj = compileObject("~/m/", "$.m() = Other");
+    const obj = compileObject(["m"], "$.m() = Other");
     const Other = Map({ prop: 123 });
     const path = List(["m"]);
     const tree = Map.of(path, obj, List(["other"]), Other);
@@ -100,67 +100,67 @@ describe("evaluate", function() {
     expect(v).toEqual(Other);
   });
   it("allocates func expression", function() {
-    const obj = compileObject("~/m/", "$.m(x) = #!floor");
+    const obj = compileObject(["m"], "$.m(x) = #!floor");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m(3.9)", tree);
     expect(v).toEqual(3.0);
   });
   it("allocates param expression", function() {
-    const obj = compileObject("~/m/", "$.m(a, b, c) = b");
+    const obj = compileObject(["m"], "$.m(a, b, c) = b");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.m(3, 4, 5)", tree)).toEqual(4);
   });
   it("allocates this expression", function() {
-    const obj = compileObject("~/m/", "$.m(a, b, c) = this");
+    const obj = compileObject(["m"], "$.m(a, b, c) = this");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.m(3, 4, 5)", tree)).toEqual(obj);
   });
   it("allocates list constructor call", function() {
-    const obj = compileObject("~/m/", "$.m() = [3, 4, 5, 6]");
+    const obj = compileObject(["m"], "$.m() = [3, 4, 5, 6]");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(List.of(3, 4, 5, 6));
   });
   it("allocates map constructor call", function() {
-    const obj = compileObject("~/m/", "$.m() = {3: 4, 5: 6}");
+    const obj = compileObject(["m"], "$.m() = {3: 4, 5: 6}");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(Map.of(3, 4, 5, 6));
   });
   it("allocates set constructor call", function() {
-    const obj = compileObject("~/m/", "$.m() = #{3, 4, 5, 6}");
+    const obj = compileObject(["m"], "$.m() = #{3, 4, 5, 6}");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(Set.of(3, 4, 5, 6));
   });
   it("allocates method call", function() {
-    const obj = compileObject("~/m/", "$.m() = $.n()\n$.n() = 3");
+    const obj = compileObject(["m"], "$.m() = $.n()\n$.n() = 3");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.m()", tree)).toEqual(3);
   });
   it("allocates val child of call", function() {
-    const obj = compileObject("~/m/", "$.m() = [3]");
+    const obj = compileObject(["m"], "$.m() = [3]");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
     expect(v).toEqual(List.of(3));
   });
   it("allocates param child of call", function() {
-    const obj = compileObject("~/m/", "$.m(b) = [b]");
+    const obj = compileObject(["m"], "$.m(b) = [b]");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m(3)", tree);
     expect(v).toEqual(List.of(3));
   });
   it("allocates call child of call", function() {
-    const obj = compileObject("~/m/", "$.m() = [$.n()]\n$.n() = 3");
+    const obj = compileObject(["m"], "$.m() = [$.n()]\n$.n() = 3");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     const v = ev("M.m()", tree);
@@ -170,7 +170,7 @@ describe("evaluate", function() {
 
 describe("allocate", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     const tree = Map.of(List(["m"]), Map({ p: 123 }));
     return evaluate(expr, tree);
   };
@@ -262,7 +262,7 @@ describe("allocate", function() {
 
 describe("number", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -430,7 +430,7 @@ describe("number", function() {
 
 describe("boolean", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -484,7 +484,7 @@ describe("boolean", function() {
 
 describe("string", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -721,7 +721,7 @@ describe("string", function() {
 
 describe("list", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -920,7 +920,7 @@ describe("list", function() {
 
 describe("map", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -991,7 +991,7 @@ describe("map", function() {
 
 describe("set", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -1096,7 +1096,7 @@ describe("set", function() {
 
 describe("undefined", function() {
   const ev = function(line) {
-    const expr = compileExpr("~/r/", line);
+    const expr = compileExpr(["r"], line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -1149,10 +1149,10 @@ describe("functions", function() {
       "$.sqrt(x) = #!sqrt",
       "$.tan(x) = #!tan"
     ].join("\n");
-    const obj = compileObject("~/f/", source);
+    const obj = compileObject(["f"], source);
     const path = List(["f"]);
     const tree = Map.of(path, obj);
-    const expr = compileExpr("~/m/", line);
+    const expr = compileExpr(["m"], line);
     return evaluate(expr, tree);
   };
   it("executes #!abs", function() {
