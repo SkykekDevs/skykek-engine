@@ -24,10 +24,12 @@ const make = require("./make.js");
 const makeObject = make.makeObject;
 const makeExpr = make.makeExpr;
 
-// Compiles an object from its source lines.
-function compileObject(pathname, lines) {
+// Compiles an object from its source code.
+function compileObject(pathname, source) {
   const name = nameFromPath(pathFromPathname(pathname));
-  const objLines = fullLines(lines).filter(function(line) {
+  source = source.replace(/\\\s*\n/g, ""); // line continuation
+  const lines = source.split("\n");
+  const objLines = lines.filter(function(line) {
     return line.startsWith("$");
   });
   var decls = [];
@@ -53,23 +55,6 @@ function compileExpr(pathname, line) {
   checkExpr(expr, {});
   renameExpr(expr, name);
   return makeExpr(expr, {});
-}
-
-// Returns a new array where the lines that were separated
-// by linebreaks are concatenated.
-function fullLines(lines) {
-  const full = [];
-  var prefix = "";
-  for (var i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.endsWith("\\\n")) {
-      prefix += line.slice(0, -2);
-    } else {
-      full.push(prefix + line);
-      prefix = "";
-    }
-  }
-  return full;
 }
 
 // Returns the path to a class from its pathname
