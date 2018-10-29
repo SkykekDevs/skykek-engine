@@ -17,16 +17,11 @@ function ruleParams(paramsN) {
 function checkDecl(n) {
   const t = n[0];
   if (t == "prop_decl") {
-    if (n[1] != "$") throw new Error("only properties of $ can be declared");
     checkLiteral(n[5]);
   } else if (t == "entry_decl") {
-    if (n[1] != "$") throw new Error("only properties of $ can be declared");
     checkLiteral(n[3]);
     checkLiteral(n[6]);
   } else if (t == "rule_decl") {
-    if (n[1] != "$") {
-      throw new Error("only rules of $ can be declared");
-    }
     checkParams(n[5]);
     checkExpr(n[8], ruleParams(n[5]));
   }

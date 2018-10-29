@@ -1,7 +1,7 @@
 "use strict";
 // scan.js implements a scanner of tokens.
 
-const re_ = /[a-zA-Z_]\w*|\$(?:[A-Z]\w*)?|0x[0-9a-fA-F]+|(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?|"(?:[^"\\]|\\.)*"|#{|#!|&&|\|\||==|!=|<=|>=|<<|>>>|>>|\*\*|\/\/.*|\s+|./g;
+const re_ = /[a-zA-Z_]\w*|@(?:[A-Z]\w*)?|0x[0-9a-fA-F]+|(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][-+]?\d+)?|"(?:[^"\\]|\\.)*"|#{|#!|&&|\|\||==|!=|<=|>=|<<|>>>|>>|\*\*|\/\/.*|\s+|./g;
 
 // Splits a line into a list of tokens.
 function tokenize(line) {
@@ -23,11 +23,9 @@ function tokenType(token) {
     return "const";
   } else if (/^in$/.test(token)) {
     return "in";
-  } else if (/^this$/.test(token)) {
-    return "this";
   } else if (/^".*"$/.test(token)) {
     return "str";
-  } else if (/^[A-Z]|\$/.test(token)) {
+  } else if (/^[A-Z@]/.test(token)) {
     return "uc";
   } else if (/^[a-z_]/.test(token)) {
     return "lc";

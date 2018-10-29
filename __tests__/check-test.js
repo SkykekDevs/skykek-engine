@@ -23,12 +23,6 @@ describe("checkDecl", function() {
   };
   it("checks a prop_decl", function() {
     expect(function() {
-      check("$T.s = 5");
-    }).toThrow("only properties of $ can be declared");
-    expect(function() {
-      check("T.s = 5");
-    }).toThrow("only properties of $ can be declared");
-    expect(function() {
       check("$.s = !5");
     }).toThrow("expected a literal");
     expect(function() {
@@ -36,12 +30,6 @@ describe("checkDecl", function() {
     }).not.toThrow();
   });
   it("checks an entry_decl", function() {
-    expect(function() {
-      check("$T[2] = 5");
-    }).toThrow("only properties of $ can be declared");
-    expect(function() {
-      check("T[2] = 5");
-    }).toThrow("only properties of $ can be declared");
     expect(function() {
       check("$[!2] = 5");
     }).toThrow("expected a literal");
@@ -53,12 +41,6 @@ describe("checkDecl", function() {
     }).not.toThrow();
   });
   it("checks a rule_decl", function() {
-    expect(function() {
-      check("$T.m() = 5");
-    }).toThrow("only rules of $ can be declared");
-    expect(function() {
-      check("T.m() = 5");
-    }).toThrow("only rules of $ can be declared");
     expect(function() {
       check("$.m() = 5");
     }).not.toThrow();
@@ -229,7 +211,7 @@ describe("checkExpr", function() {
       check("A.3");
     }).toThrow("a dot must be followed by a property name or a call");
     expect(function() {
-      check("A.this");
+      check("A.$");
     }).toThrow("a dot must be followed by a property name or a call");
     expect(function() {
       check('A."abc"');

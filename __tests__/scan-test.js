@@ -26,7 +26,10 @@ describe("Scanner", function() {
       for (var token of ["abc", "_abc"]) {
         expect(new Scanner(token).tk("lc")).toEqual(token);
       }
-      for (var token of ["Abc2_", "AbcDef2_", "$", "$Abc2_", "$AbcDef2_"]) {
+      for (var token of ["Abc2_", "AbcDef2_"]) {
+        expect(new Scanner(token).tk("uc")).toEqual(token);
+      }
+      for (var token of ["@", "@Abc2_", "@AbcDef2_"]) {
         expect(new Scanner(token).tk("uc")).toEqual(token);
       }
       for (var token of ["98", "0", "2.3", "0x09afAF", "Infinity"]) {
@@ -47,15 +50,17 @@ describe("Scanner", function() {
         ">>",
         ">>>",
         "**",
-        "in",
-        "this"
+        "in"
       ]) {
         expect(new Scanner(token).tk(token)).toEqual(token);
       }
       for (var token of ['"abc"']) {
         expect(new Scanner(token).tk("str")).toEqual(token);
       }
-      for (var token of [":", "(", ")", "[", "]", "{", "}", ".", ",", "!"]) {
+      for (var token of ["(", ")", "[", "]", "{", "}"]) {
+        expect(new Scanner(token).tk(token)).toEqual(token);
+      }
+      for (var token of [":", ".", ",", "!", "$", "#"]) {
         expect(new Scanner(token).tk(token)).toEqual(token);
       }
       for (var token of ["+", "-", "*", "/", "%", "&", "^", "~", "|", "="]) {

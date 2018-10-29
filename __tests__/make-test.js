@@ -346,8 +346,8 @@ describe("makeExpr", function() {
     const ev = x;
     expect(v).toEqual(ev);
   });
-  it("makes this", function() {
-    const v = make("this");
+  it("makes $", function() {
+    const v = make("$");
     const ev = Map({ param: 0 });
     expect(v).toEqual(ev);
   });

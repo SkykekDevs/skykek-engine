@@ -21,11 +21,11 @@ const UEXPR = { "!": 1, "-": 1, "~": 1 };
 
 // Parses a declaration. s is a scanner.
 function parseDecl(s) {
-  const uc = s.tk("uc");
+  const ds = s.tk("$");
   if (s.tt == "[") {
     const decl = [
       "entry_decl",
-      uc,
+      ds,
       s.tk("["),
       parseExpr1(s),
       s.tk("]"),
@@ -40,7 +40,7 @@ function parseDecl(s) {
   if (s.tt == "(") {
     const decl = [
       "rule_decl",
-      uc,
+      ds,
       dot,
       lc,
       s.tk("("),
@@ -52,7 +52,7 @@ function parseDecl(s) {
     s.tk("eof");
     return decl;
   }
-  const decl = ["prop_decl", uc, dot, lc, s.tk("="), parseExpr1(s)];
+  const decl = ["prop_decl", ds, dot, lc, s.tk("="), parseExpr1(s)];
   s.tk("eof");
   return decl;
 }
@@ -187,8 +187,8 @@ function parseAExpr(s) {
       return ["call_expr", lc, s.tk("("), parseArgs(s), s.tk(")")];
     }
     return ["param_expr", lc];
-  } else if (s.tt == "this") {
-    return ["this_expr", s.tk("this")];
+  } else if (s.tt == "$") {
+    return ["this_expr", s.tk("$")];
   } else if (s.tt == "[") {
     return ["list_expr", s.tk("["), parseListElements(s), s.tk("]")];
   } else if (s.tt == "{") {

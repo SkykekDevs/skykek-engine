@@ -20,7 +20,7 @@
 
     SomeClassName
 
- Relative class names are supported through the `$` prefix. For example, in a class named `Sports`, `$` is equivalent to `Sports` and `$Team` is equivalent to `SportsTeam`.
+ Relative class names are supported through the `@` prefix. For example, in a class named `Sports`, `@` is equivalent to `Sports` and `@Team` is equivalent to `SportsTeam`.
 
 
 ### Keywords
@@ -186,13 +186,13 @@
 
 ### Parameters
 
- _param-expr_ := _param-name_ | `this`
+ _param-expr_ := _param-name_ | `$`
 
  A parameter expression refers to a parameter from the left-hand side of the rule. For example, the following rule returns parameter `b`:
 
     $.m(a, b, c) = b
 
-  With the `this` keyword, you can refer to the object whose method was called.
+ The `$` parameter refers to the object whose method was called. This parameter is sometimes called `this` or `self` in other programming languages.
 
 
 ### Properties

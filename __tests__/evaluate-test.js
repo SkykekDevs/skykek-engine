@@ -112,8 +112,8 @@ describe("evaluate", function() {
     const tree = Map.of(path, obj);
     expect(ev("M.m(3, 4, 5)", tree)).toEqual(4);
   });
-  it("allocates this expression", function() {
-    const obj = compileObject(["m"], "$.m(a, b, c) = this");
+  it("allocates $ expression", function() {
+    const obj = compileObject(["m"], "$.m(a, b, c) = $");
     const path = List(["m"]);
     const tree = Map.of(path, obj);
     expect(ev("M.m(3, 4, 5)", tree)).toEqual(obj);

@@ -305,8 +305,8 @@ describe("parseExpr()", function() {
     expect(v).toEqual(ev);
   });
   it("parses a this expression", function() {
-    const v = parse("this");
-    const ev = ["this_expr", "this"];
+    const v = parse("$");
+    const ev = ["this_expr", "$"];
     expect(v).toEqual(ev);
   });
   it("parses a list expression", function() {
