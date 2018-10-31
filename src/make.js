@@ -11,16 +11,15 @@ const Set = immutable.Set;
 function makePath(name) {
   var m = name.match(/[A-Z][^A-Z]*/g);
   if (!m) m = [];
-  var p = List(
+  return List(
     m.map(function(s) {
       return s.toLowerCase();
     })
   );
-  return Map({ path: p });
 }
 
 // expression for the Global object
-const Global = makePath("Global");
+const Global = Map({ load: makePath("Global") });
 
 // method names of unary operators
 const UNARY = { "!": "lnot", "-": "neg", "~": "not" };
@@ -63,8 +62,6 @@ function makeObject(decls) {
     const n = decls[i];
     const t = n[0];
     if (t == "prop_decl") {
-      obj = obj.set(n[3], makeValue(n[5]));
-    } else if (t == "entry_decl") {
       obj = obj.set(makeValue(n[3]), makeValue(n[6]));
     } else if (t == "rule_decl") {
       const nameKey = getNameKey(n);
@@ -111,6 +108,8 @@ function makeValue(n) {
     return parseFloat(n[1]);
   } else if (t == "const_expr") {
     return CONST[n[1]];
+  } else if (t == "path_expr") {
+    return makePath(n[1]);
   } else if (t == "str_expr") {
     return JSON.parse(n[1]);
   } else if (t == "list_expr") {
@@ -170,27 +169,35 @@ function makeExpr(n, p) {
       call: UNARY[n[1]],
       args: List([makeExpr(n[2], p)])
     });
-  } else if (t == "dot_expr") {
-    const sub = n[3];
-    if (sub[0] == "param_expr") {
-      return Map({
-        call: "get",
-        args: List([makeExpr(n[1], p), Map({ val: sub[1] })])
-      });
-    } else {
-      // sub[0] == 'call_expr'
-      var args = [makeExpr(n[1], p)];
-      const others = sub[3];
-      for (var i = 0; i < others.length; i++) {
-        args.push(makeExpr(others[i], p));
-      }
-      return Map({ call: sub[1], args: List(args) });
-    }
   } else if (t == "get_expr") {
     return Map({
       call: "get",
       args: List([makeExpr(n[1], p), makeExpr(n[3], p)])
     });
+  } else if (t == "load_expr") {
+    return Map({
+      call: "load",
+      args: List([makeExpr(n[1], p)])
+    });
+  } else if (t == "constructor_expr") {
+    var args = [
+      Map({
+        call: "load",
+        args: List([makeExpr(n[1], p)])
+      })
+    ];
+    const others = n[3];
+    for (var i = 0; i < others.length; i++) {
+      args.push(makeExpr(others[i], p));
+    }
+    return Map({ call: "init", args: List(args) });
+  } else if (t == "call_expr") {
+    var args = [makeExpr(n[1], p)];
+    const others = n[5];
+    for (var i = 0; i < others.length; i++) {
+      args.push(makeExpr(others[i], p));
+    }
+    return Map({ call: n[3], args: List(args) });
   } else if (t == "num_expr") {
     return Map({ val: parseFloat(n[1]) });
   } else if (t == "negnum_expr") {
@@ -200,23 +207,9 @@ function makeExpr(n, p) {
   } else if (t == "str_expr") {
     return Map({ val: JSON.parse(n[1]) });
   } else if (t == "path_expr") {
-    return makePath(n[1]);
-  } else if (t == "make_expr") {
-    var args = [makePath(n[1])];
-    const others = n[3];
-    for (var i = 0; i < others.length; i++) {
-      args.push(makeExpr(others[i], p));
-    }
-    return Map({ call: "make", args: List(args) });
+    return Map({ val: makePath(n[1]) });
   } else if (t == "func_expr") {
     return Map({ func: n[2] });
-  } else if (t == "call_expr") {
-    var args = [Global];
-    const others = n[3];
-    for (var i = 0; i < others.length; i++) {
-      args.push(makeExpr(others[i], p));
-    }
-    return Map({ call: n[1], args: List(args) });
   } else if (t == "param_expr") {
     return Map({ param: p[n[1]] });
   } else if (t == "this_expr") {

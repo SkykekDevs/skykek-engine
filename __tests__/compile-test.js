@@ -37,30 +37,23 @@ describe("compileObject", function() {
     }
   });
   it("joins lines that end with a backslash (line continuation)", function() {
+    const v = compileObject(
+      ["r"],
+      '$["a"] = \\\n3\n$["b"] = \\   \n4\n$["c"] = 5'
+    );
     const obj = Map.of("a", 3, "b", 4, "c", 5);
-    const v = compileObject(["r"], "$.a = \\\n3\n$.b = \\   \n4\n$.c = 5");
     expect(v).toEqual(obj);
   });
   it("renames relative class names", function() {
-    const expr0 = Map({ path: List(["a"]) });
-    const obj0 = Map.of("m", Map.of(1, Map.of(undefined, expr0)));
-    const v0 = compileObject([], "$.m() = @A");
-    expect(v0).toEqual(obj0);
-
-    const expr1 = Map({ path: List(["r", "a"]) });
-    const obj1 = Map.of("m", Map.of(1, Map.of(undefined, expr1)));
-    const v1 = compileObject(["r"], "$.m() = @A");
-    expect(v1).toEqual(obj1);
-
-    const expr2 = Map({ path: List(["r", "s", "a"]) });
-    const obj2 = Map.of("m", Map.of(1, Map.of(undefined, expr2)));
-    const v2 = compileObject(["r", "s"], "$.m() = @A");
-    expect(v2).toEqual(obj2);
+    const v = compileObject(["r", "s"], "$.m() = @A");
+    const expr = Map({ val: List(["r", "s", "a"]) });
+    const obj = Map.of("m", Map.of(1, Map.of(undefined, expr)));
+    expect(v).toEqual(obj);
   });
   it("makes and returns the object", function() {
+    const v = compileObject(["r"], "$.m() = 123");
     const expr = Map({ val: 123 });
     const obj = Map.of("m", Map.of(1, Map.of(undefined, expr)));
-    const v = compileObject(["r"], "$.m() = 123");
     expect(v).toEqual(obj);
   });
 });
@@ -77,15 +70,9 @@ describe("compileExpr", function() {
     }).toThrow("unknown character escape in string");
   });
   it("renames relative class names", function() {
-    const v0 = compileExpr([], "@A");
-    const ev0 = Map({ path: List(["a"]) });
-    expect(v0).toEqual(ev0);
-    const v1 = compileExpr(["r"], "@A");
-    const ev1 = Map({ path: List(["r", "a"]) });
-    expect(v1).toEqual(ev1);
-    const v2 = compileExpr(["r", "s"], "@A");
-    const ev2 = Map({ path: List(["r", "s", "a"]) });
-    expect(v2).toEqual(ev2);
+    const v = compileExpr(["r", "s"], "@A");
+    const ev = Map({ val: List(["r", "s", "a"]) });
+    expect(v).toEqual(ev);
   });
   it("makes and returns the expression", function() {
     const v = compileExpr(["r"], "123");

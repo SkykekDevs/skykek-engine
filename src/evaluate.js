@@ -1098,19 +1098,19 @@ funcs.min = function(a) {
   return Math.min(a[1], a[2]);
 };
 
-funcs.parseFloat = function(a) {
+funcs.parsefloat = function(a) {
   if (a.length != 2) return undefined;
   if (typeof a[1] != "string") return undefined;
   return parseFloat(a[1]);
 };
 
-funcs.parseInt = function(a) {
+funcs.parseint = function(a) {
   if (a.length != 2) return undefined;
   if (typeof a[1] != "string") return undefined;
   return parseInt(a[1]);
 };
 
-funcs.parseInt2 = function(a) {
+funcs.parseint2 = function(a) {
   if (a.length != 3) return undefined;
   if (typeof a[1] != "string") return undefined;
   if (typeof a[2] != "number") return undefined;
@@ -1165,6 +1165,8 @@ function Call(mName, args, caller, index) {
   this.index = index;
 }
 
+const EMPTY_OBJECT = Map({});
+
 // Evaluates an expression using the given class tree.
 function evaluate(expr, tree) {
   var stack = [new Call("<root-call>", [undefined], -1, 0)];
@@ -1204,6 +1206,11 @@ function evaluate(expr, tree) {
         }
       }
     }
+    // If this is a call to list.load, execute the call right here.
+    if (type == "list" && mName === "load") {
+      stack[call.caller].args[call.index] = tree.get(this_, undefined);
+      continue;
+    }
     // Try to find a built-in rule matching this call.
     const byMName = BUILTIN[type];
     if (!byMName.hasOwnProperty(mName)) {
@@ -1217,8 +1224,6 @@ function evaluate(expr, tree) {
   }
   return stack[0].args[0];
 }
-
-const EMPTY_OBJECT = Map({});
 
 // For a call expression, allocates the call onto the stack.
 // For other expressions, assigns the value to its destination.
@@ -1252,14 +1257,6 @@ function alloc(tree, expr, params, stack, caller, index) {
       stack[caller].args[index] = undefined;
       return;
     }
-  } else if (expr.has("path")) {
-    const path = expr.get("path");
-    if (!List.isList(path)) {
-      stack[caller].args[index] = undefined;
-      return;
-    }
-    stack[caller].args[index] = tree.get(path, EMPTY_OBJECT);
-    return;
   } else if (expr.has("func")) {
     const func = expr.get("func");
     if (!funcs.hasOwnProperty(func)) {

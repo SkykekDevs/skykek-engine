@@ -16,7 +16,7 @@ const evaluate = evaluate_.evaluate;
 
 describe("evaluate", function() {
   const ev = function(line, tree) {
-    const expr = compileExpr(["m"], line);
+    const expr = compileExpr(["c"], line);
     return evaluate(expr, tree);
   };
   it('throws "no matching rule found" on call with bad method name', function() {
@@ -26,236 +26,207 @@ describe("evaluate", function() {
     }).toThrow("no matching rule found");
   });
   it('throws "no matching rule found" on call with bad number of arguments', function() {
-    const obj = compileObject(["m"], "$.m(x) = 3");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
+    const obj = compileObject(["c"], "$.m(x) = 3");
+    const tree = Map.of(List(["c"]), obj);
     expect(function() {
-      ev("M.m()", tree);
+      ev("C#.m()", tree);
     }).toThrow("no matching rule found");
   });
   it("evaluates calls", function() {
-    const obj = compileObject(["m"], "$.m() = 3");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m()", tree)).toEqual(3);
+    const obj = compileObject(["c"], "$.m() = 3");
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m()", tree)).toEqual(3);
   });
   it("evaluates calls defined at run-time", function() {
     const obj = compileObject(
-      ["m"],
+      ["c"],
       '$.m() = {"n": {1: {undefined: {"val": 4}}}}.n()'
     );
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m()", tree)).toEqual(4);
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m()", tree)).toEqual(4);
   });
   it("built-in map methods have priority over normal methods", function() {
     const obj = compileObject(
-      ["m"],
+      ["c"],
       '$.m() = {"x": 4, "get": {2: {"x": {"val": 5}}}}.get("x")'
     );
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m()", tree)).toEqual(4);
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m()", tree)).toEqual(4);
   });
   it("objects are maps", function() {
-    const obj = compileObject(["m"], "$.p1 = 11\n$.p2 = 22");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.size()", tree)).toEqual(2);
-    expect(ev('M.get("p1")', tree)).toEqual(11);
+    const obj = compileObject(["c"], '$["p1"] = 11\n$["p2"] = 22');
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.size()", tree)).toEqual(2);
+    expect(ev('C#.get("p1")', tree)).toEqual(11);
   });
-  it("evaluates global calls", function() {
-    const obj = compileObject(["global"], "$.round(x) = #!round");
-    const path = List(["global"]);
-    const tree = Map.of(path, obj);
-    expect(ev("round(1.8)", tree)).toEqual(2);
+  it("allocates load expression", function() {
+    const obj = Map({ prop: 123 });
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#", tree);
+    expect(v).toEqual(obj);
+  });
+  it("allocates constructor expression", function() {
+    const obj = compileObject(["c"], "$.init(a) = a + 1");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C(3)", tree);
+    expect(v).toEqual(4);
   });
   it("allocates number expression", function() {
-    const obj = compileObject(["m"], "$.m() = 6");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+    const obj = compileObject(["c"], "$.m() = 6");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(6);
   });
   it("allocates string expression", function() {
-    const obj = compileObject(["m"], '$.m() = "abc"');
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+    const obj = compileObject(["c"], '$.m() = "abc"');
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual("abc");
   });
   it("allocates boolean expression", function() {
-    const obj = compileObject(["m"], "$.m() = true");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+    const obj = compileObject(["c"], "$.m() = true");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(true);
   });
   it("allocates path expression", function() {
-    const obj = compileObject(["m"], "$.m() = Other");
-    const Other = Map({ prop: 123 });
-    const path = List(["m"]);
-    const tree = Map.of(path, obj, List(["other"]), Other);
-    const v = ev("M.m()", tree);
-    expect(v).toEqual(Other);
+    const obj = compileObject(["c"], "$.m() = SomeClass");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
+    expect(v).toEqual(List(["some", "class"]));
   });
   it("allocates func expression", function() {
-    const obj = compileObject(["m"], "$.m(x) = #!floor");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m(3.9)", tree);
+    const obj = compileObject(["c"], "$.m(x) = #!/floor");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m(3.9)", tree);
     expect(v).toEqual(3.0);
   });
   it("allocates param expression", function() {
-    const obj = compileObject(["m"], "$.m(a, b, c) = b");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m(3, 4, 5)", tree)).toEqual(4);
+    const obj = compileObject(["c"], "$.m(a, b, c) = b");
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m(3, 4, 5)", tree)).toEqual(4);
   });
   it("allocates $ expression", function() {
-    const obj = compileObject(["m"], "$.m(a, b, c) = $");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m(3, 4, 5)", tree)).toEqual(obj);
+    const obj = compileObject(["c"], "$.m(a, b, c) = $");
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m(3, 4, 5)", tree)).toEqual(obj);
   });
-  it("allocates list constructor call", function() {
-    const obj = compileObject(["m"], "$.m() = [3, 4, 5, 6]");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+  it("allocates list", function() {
+    const obj = compileObject(["c"], "$.m() = [3, 4, 5, 6]");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(List.of(3, 4, 5, 6));
   });
-  it("allocates map constructor call", function() {
-    const obj = compileObject(["m"], "$.m() = {3: 4, 5: 6}");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+  it("allocates map", function() {
+    const obj = compileObject(["c"], "$.m() = {3: 4, 5: 6}");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(Map.of(3, 4, 5, 6));
   });
-  it("allocates set constructor call", function() {
-    const obj = compileObject(["m"], "$.m() = #{3, 4, 5, 6}");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+  it("allocates set", function() {
+    const obj = compileObject(["c"], "$.m() = #{3, 4, 5, 6}");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(Set.of(3, 4, 5, 6));
   });
-  it("allocates method call", function() {
-    const obj = compileObject(["m"], "$.m() = $.n()\n$.n() = 3");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    expect(ev("M.m()", tree)).toEqual(3);
+  it("allocates call", function() {
+    const obj = compileObject(["c"], "$.m() = $.n()\n$.n() = 3");
+    const tree = Map.of(List(["c"]), obj);
+    expect(ev("C#.m()", tree)).toEqual(3);
   });
   it("allocates val child of call", function() {
-    const obj = compileObject(["m"], "$.m() = [3]");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+    const obj = compileObject(["c"], "$.m() = [3]");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(List.of(3));
   });
   it("allocates param child of call", function() {
-    const obj = compileObject(["m"], "$.m(b) = [b]");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m(3)", tree);
+    const obj = compileObject(["c"], "$.m(b) = [b]");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m(3)", tree);
     expect(v).toEqual(List.of(3));
   });
   it("allocates call child of call", function() {
-    const obj = compileObject(["m"], "$.m() = [$.n()]\n$.n() = 3");
-    const path = List(["m"]);
-    const tree = Map.of(path, obj);
-    const v = ev("M.m()", tree);
+    const obj = compileObject(["c"], "$.m() = [$.n()]\n$.n() = 3");
+    const tree = Map.of(List(["c"]), obj);
+    const v = ev("C#.m()", tree);
     expect(v).toEqual(List.of(3));
   });
 });
 
 describe("allocate", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
-    const tree = Map.of(List(["m"]), Map({ p: 123 }));
+    const expr = compileExpr(["d"], line);
+    const tree = Map.of(List(["c"]), Map({ p: 123 }));
     return evaluate(expr, tree);
   };
   it("supports call expressions with wrongly-typed method name", function() {
     const args = '[{"val": {"p": 4}}, {"val": "p"}]';
     const call = '{"call": 33, "args": ' + args + "}";
-    const v = ev('{"n": {1: {undefined: ' + call + "}}}.n()");
+    const v = ev('{"m": {1: {undefined: ' + call + "}}}.m()");
     expect(v).toEqual(undefined);
   });
   it("supports call expressions with wrongly-named method", function() {
     const args = '[{"val": {"p": 4}}, {"val": "p"}]';
     const call = '{"call": "...", "args": ' + args + "}";
-    const v = ev('{"n": {1: {undefined: ' + call + "}}}.n()");
+    const v = ev('{"m": {1: {undefined: ' + call + "}}}.m()");
     expect(v).toEqual(undefined);
   });
   it("supports call expressions with wrongly-typed arg list", function() {
     const call = '{"call": "get", "args": 33}';
-    const v = ev('{"n": {1: {undefined: ' + call + "}}}.n()");
+    const v = ev('{"m": {1: {undefined: ' + call + "}}}.m()");
     expect(v).toEqual(undefined);
   });
   it("supports call expressions with empty arg list", function() {
     const call = '{"call": "get", "args": []}';
-    const v = ev('{"n": {1: {undefined: ' + call + "}}}.n()");
+    const v = ev('{"m": {1: {undefined: ' + call + "}}}.m()");
     expect(v).toEqual(undefined);
   });
   it("supports well-formed call expressions", function() {
     const args = '[{"val": {"p": 4}}, {"val": "p"}]';
     const call = '{"call": "get", "args": ' + args + "}";
-    const v = ev('{"n": {1: {undefined: ' + call + "}}}.n()");
+    const v = ev('{"m": {1: {undefined: ' + call + "}}}.m()");
     expect(v).toEqual(4);
   });
   it("supports param expressions with wrongly-typed index", function() {
-    const v = ev('{"n": {2: {undefined: {"param": "abc"}}}}.n(4)');
+    const v = ev('{"m": {2: {undefined: {"param": "abc"}}}}.m(4)');
     expect(v).toEqual(undefined);
   });
   it("supports param expressions with index that is too low", function() {
-    const v = ev('{"n": {2: {undefined: {"param": -1}}}}.n(4)');
+    const v = ev('{"m": {2: {undefined: {"param": -1}}}}.m(4)');
     expect(v).toEqual(undefined);
   });
   it("supports param expressions with index that is too high", function() {
-    const v = ev('{"n": {2: {undefined: {"param": 2}}}}.n(4)');
+    const v = ev('{"m": {2: {undefined: {"param": 2}}}}.m(4)');
     expect(v).toEqual(undefined);
   });
   it("supports well-formed param expressions", function() {
-    const v = ev('{"n": {2: {undefined: {"param": 1}}}}.n(4)');
+    const v = ev('{"m": {2: {undefined: {"param": 1}}}}.m(4)');
     expect(v).toEqual(4);
-  });
-  it("supports path expressions with bad path", function() {
-    const expr = '{"path": 32}';
-    const v = ev('{"n": {1: {undefined: ' + expr + "}}}.n()");
-    expect(is(v, undefined)).toBe(true);
-  });
-  it("supports path expressions with path not in tree", function() {
-    const expr = '{"path": ["n"]}';
-    const v = ev('{"n": {1: {undefined: ' + expr + "}}}.n()");
-    expect(is(v, Map({}))).toBe(true);
-  });
-  it("supports path expressions", function() {
-    const expr = '{"path": ["m"]}';
-    const v = ev('{"n": {1: {undefined: ' + expr + "}}}.n()");
-    expect(is(v, Map({ p: 123 }))).toBe(true);
   });
   it("supports func expressions with bad name", function() {
     const expr = '{"func": "qwertyuio"}';
-    const v = ev('{"n": {3: {undefined: ' + expr + "}}}.n(2, 3)");
+    const v = ev('{"m": {3: {undefined: ' + expr + "}}}.m(2, 3)");
     expect(v).toEqual(undefined);
   });
   it("supports func expressions with wrong number of arguments", function() {
     const expr = '{"func": "add"}';
-    const v = ev('{"n": {4: {undefined: ' + expr + "}}}.n(2, 3, 4)");
+    const v = ev('{"m": {4: {undefined: ' + expr + "}}}.m(2, 3, 4)");
     expect(v).toEqual(undefined);
   });
   it("supports func expressions", function() {
     const expr = '{"func": "abs"}';
-    const v = ev('{"n": {2: {undefined: ' + expr + "}}}.n(-5)");
+    const v = ev('{"m": {2: {undefined: ' + expr + "}}}.m(-5)");
     expect(v).toEqual(5);
   });
   it("supports val expressions", function() {
-    const v = ev('{"n": {1: {undefined: {"val": 4}}}}.n()');
+    const v = ev('{"m": {1: {undefined: {"val": 4}}}}.m()');
     expect(v).toEqual(4);
   });
   it("supports malformed expressions", function() {
-    const vEmptyMap = ev('{"n": {1: {undefined: {}}}}.n()');
+    const vEmptyMap = ev('{"m": {1: {undefined: {}}}}.m()');
     expect(vEmptyMap).toEqual(undefined);
-    const vNoMap = ev('{"n": {1: {undefined: 1234}}}.n()');
+    const vNoMap = ev('{"m": {1: {undefined: 1234}}}.m()');
     expect(vNoMap).toEqual(undefined);
   });
 });
@@ -1127,27 +1098,27 @@ describe("undefined", function() {
 describe("functions", function() {
   const ev = function(line) {
     const source = [
-      "$.abs(x) = #!abs",
-      "$.acos(x) = #!acos",
-      "$.asin(x) = #!asin",
-      "$.atan(x) = #!atan",
-      "$.atan2(y,x) = #!atan2",
-      "$.ceil(x) = #!ceil",
-      "$.cos(x) = #!cos",
-      "$.exp(x) = #!exp",
-      "$.floor(x) = #!floor",
-      "$.chr(x) = #!chr",
-      "$.log(x) = #!log",
-      "$.max(x,y) = #!max",
-      "$.min(x,y) = #!min",
-      "$.parseFloat(x) = #!parseFloat",
-      "$.parseInt(x) = #!parseInt",
-      "$.parseInt(x, y) = #!parseInt2",
-      "$.pow(x,y) = #!pow",
-      "$.round(x) = #!round",
-      "$.sin(x) = #!sin",
-      "$.sqrt(x) = #!sqrt",
-      "$.tan(x) = #!tan"
+      "$.abs(x) = #!/abs",
+      "$.acos(x) = #!/acos",
+      "$.asin(x) = #!/asin",
+      "$.atan(x) = #!/atan",
+      "$.atan2(y,x) = #!/atan2",
+      "$.ceil(x) = #!/ceil",
+      "$.cos(x) = #!/cos",
+      "$.exp(x) = #!/exp",
+      "$.floor(x) = #!/floor",
+      "$.chr(x) = #!/chr",
+      "$.log(x) = #!/log",
+      "$.max(x,y) = #!/max",
+      "$.min(x,y) = #!/min",
+      "$.parseFloat(x) = #!/parsefloat",
+      "$.parseInt(x) = #!/parseint",
+      "$.parseInt(x, y) = #!/parseint2",
+      "$.pow(x,y) = #!/pow",
+      "$.round(x) = #!/round",
+      "$.sin(x) = #!/sin",
+      "$.sqrt(x) = #!/sqrt",
+      "$.tan(x) = #!/tan"
     ].join("\n");
     const obj = compileObject(["f"], source);
     const path = List(["f"]);
@@ -1155,96 +1126,96 @@ describe("functions", function() {
     const expr = compileExpr(["m"], line);
     return evaluate(expr, tree);
   };
-  it("executes #!abs", function() {
-    expect(ev("F.abs(-2)")).toEqual(2);
-    expect(ev("F.abs([])")).toEqual(undefined);
+  it("executes #!/abs", function() {
+    expect(ev("F#.abs(-2)")).toEqual(2);
+    expect(ev("F#.abs([])")).toEqual(undefined);
   });
-  it("executes #!acos", function() {
-    expect(ev("F.acos(0.5)")).toEqual(Math.acos(0.5));
-    expect(ev("F.acos([])")).toEqual(undefined);
+  it("executes #!/acos", function() {
+    expect(ev("F#.acos(0.5)")).toEqual(Math.acos(0.5));
+    expect(ev("F#.acos([])")).toEqual(undefined);
   });
-  it("executes #!asin", function() {
-    expect(ev("F.asin(0.5)")).toEqual(Math.asin(0.5));
-    expect(ev("F.asin([])")).toEqual(undefined);
+  it("executes #!/asin", function() {
+    expect(ev("F#.asin(0.5)")).toEqual(Math.asin(0.5));
+    expect(ev("F#.asin([])")).toEqual(undefined);
   });
-  it("executes #!atan", function() {
-    expect(ev("F.atan(0.5)")).toEqual(Math.atan(0.5));
-    expect(ev("F.atan([])")).toEqual(undefined);
+  it("executes #!/atan", function() {
+    expect(ev("F#.atan(0.5)")).toEqual(Math.atan(0.5));
+    expect(ev("F#.atan([])")).toEqual(undefined);
   });
-  it("executes #!atan2", function() {
-    expect(ev("F.atan2(1, 3)")).toEqual(Math.atan2(1, 3));
-    expect(ev("F.atan2([], 3)")).toEqual(undefined);
-    expect(ev("F.atan2(1, [])")).toEqual(undefined);
+  it("executes #!/atan2", function() {
+    expect(ev("F#.atan2(1, 3)")).toEqual(Math.atan2(1, 3));
+    expect(ev("F#.atan2([], 3)")).toEqual(undefined);
+    expect(ev("F#.atan2(1, [])")).toEqual(undefined);
   });
-  it("executes #!ceil", function() {
-    expect(ev("F.ceil(2.1)")).toEqual(3);
-    expect(ev("F.ceil([])")).toEqual(undefined);
+  it("executes #!/ceil", function() {
+    expect(ev("F#.ceil(2.1)")).toEqual(3);
+    expect(ev("F#.ceil([])")).toEqual(undefined);
   });
-  it("executes #!cos", function() {
-    expect(ev("F.cos(1)")).toEqual(Math.cos(1));
-    expect(ev("F.cos([])")).toEqual(undefined);
+  it("executes #!/cos", function() {
+    expect(ev("F#.cos(1)")).toEqual(Math.cos(1));
+    expect(ev("F#.cos([])")).toEqual(undefined);
   });
-  it("executes #!exp", function() {
-    expect(ev("F.exp(2)")).toEqual(Math.exp(2));
-    expect(ev("F.exp([])")).toEqual(undefined);
+  it("executes #!/exp", function() {
+    expect(ev("F#.exp(2)")).toEqual(Math.exp(2));
+    expect(ev("F#.exp([])")).toEqual(undefined);
   });
-  it("executes #!floor", function() {
-    expect(ev("F.floor(2.9)")).toEqual(2);
-    expect(ev("F.floor([])")).toEqual(undefined);
+  it("executes #!/floor", function() {
+    expect(ev("F#.floor(2.9)")).toEqual(2);
+    expect(ev("F#.floor([])")).toEqual(undefined);
   });
-  it("executes #!chr", function() {
-    expect(ev("F.chr(97)")).toEqual("a");
-    expect(ev("F.chr([])")).toEqual(undefined);
+  it("executes #!/chr", function() {
+    expect(ev("F#.chr(97)")).toEqual("a");
+    expect(ev("F#.chr([])")).toEqual(undefined);
   });
-  it("executes #!log", function() {
-    expect(ev("F.log(5)")).toEqual(Math.log(5));
-    expect(ev("F.log([])")).toEqual(undefined);
+  it("executes #!/log", function() {
+    expect(ev("F#.log(5)")).toEqual(Math.log(5));
+    expect(ev("F#.log([])")).toEqual(undefined);
   });
-  it("executes #!max", function() {
-    expect(ev("F.max(5, 4)")).toEqual(5);
-    expect(ev("F.max(4, 5)")).toEqual(5);
-    expect(ev("F.max([], 4)")).toEqual(undefined);
-    expect(ev("F.max(5, [])")).toEqual(undefined);
+  it("executes #!/max", function() {
+    expect(ev("F#.max(5, 4)")).toEqual(5);
+    expect(ev("F#.max(4, 5)")).toEqual(5);
+    expect(ev("F#.max([], 4)")).toEqual(undefined);
+    expect(ev("F#.max(5, [])")).toEqual(undefined);
   });
-  it("executes #!min", function() {
-    expect(ev("F.min(4, 5)")).toEqual(4);
-    expect(ev("F.min(5, 4)")).toEqual(4);
-    expect(ev("F.min([], 4)")).toEqual(undefined);
-    expect(ev("F.min(5, [])")).toEqual(undefined);
+  it("executes #!/min", function() {
+    expect(ev("F#.min(4, 5)")).toEqual(4);
+    expect(ev("F#.min(5, 4)")).toEqual(4);
+    expect(ev("F#.min([], 4)")).toEqual(undefined);
+    expect(ev("F#.min(5, [])")).toEqual(undefined);
   });
-  it("executes #!parseFloat", function() {
-    expect(ev('F.parseFloat("2.5")')).toEqual(2.5);
-    expect(ev("F.parseFloat([])")).toEqual(undefined);
+  it("executes #!/parsefloat", function() {
+    expect(ev('F#.parseFloat("2.5")')).toEqual(2.5);
+    expect(ev("F#.parseFloat([])")).toEqual(undefined);
   });
-  it("executes #!parseInt", function() {
-    expect(ev('F.parseInt("2.5")')).toEqual(2);
-    expect(ev("F.parseInt([])")).toEqual(undefined);
+  it("executes #!/parseint", function() {
+    expect(ev('F#.parseInt("2.5")')).toEqual(2);
+    expect(ev("F#.parseInt([])")).toEqual(undefined);
   });
-  it("executes #!parseInt2", function() {
-    expect(ev('F.parseInt("11", 2)')).toEqual(3);
-    expect(ev("F.parseInt([], 2)")).toEqual(undefined);
-    expect(ev('F.parseInt("11", [])')).toEqual(undefined);
+  it("executes #!/parseint2", function() {
+    expect(ev('F#.parseInt("11", 2)')).toEqual(3);
+    expect(ev("F#.parseInt([], 2)")).toEqual(undefined);
+    expect(ev('F#.parseInt("11", [])')).toEqual(undefined);
   });
-  it("executes #!pow", function() {
-    expect(ev("F.pow(2, 3)")).toEqual(8);
-    expect(ev("F.pow([], 3)")).toEqual(undefined);
-    expect(ev("F.pow(2, [])")).toEqual(undefined);
+  it("executes #!/pow", function() {
+    expect(ev("F#.pow(2, 3)")).toEqual(8);
+    expect(ev("F#.pow([], 3)")).toEqual(undefined);
+    expect(ev("F#.pow(2, [])")).toEqual(undefined);
   });
-  it("executes #!round", function() {
-    expect(ev("F.round(2.1)")).toEqual(2);
-    expect(ev("F.round(2.9)")).toEqual(3);
-    expect(ev("F.round([])")).toEqual(undefined);
+  it("executes #!/round", function() {
+    expect(ev("F#.round(2.1)")).toEqual(2);
+    expect(ev("F#.round(2.9)")).toEqual(3);
+    expect(ev("F#.round([])")).toEqual(undefined);
   });
-  it("executes #!sin", function() {
-    expect(ev("F.sin(1)")).toEqual(Math.sin(1));
-    expect(ev("F.sin([])")).toEqual(undefined);
+  it("executes #!/sin", function() {
+    expect(ev("F#.sin(1)")).toEqual(Math.sin(1));
+    expect(ev("F#.sin([])")).toEqual(undefined);
   });
-  it("executes #!sqrt", function() {
-    expect(ev("F.sqrt(16)")).toEqual(4);
-    expect(ev("F.sqrt([])")).toEqual(undefined);
+  it("executes #!/sqrt", function() {
+    expect(ev("F#.sqrt(16)")).toEqual(4);
+    expect(ev("F#.sqrt([])")).toEqual(undefined);
   });
-  it("executes #!tan", function() {
-    expect(ev("F.tan(1)")).toEqual(Math.tan(1));
-    expect(ev("F.tan([])")).toEqual(undefined);
+  it("executes #!/tan", function() {
+    expect(ev("F#.tan(1)")).toEqual(Math.tan(1));
+    expect(ev("F#.tan([])")).toEqual(undefined);
   });
 });

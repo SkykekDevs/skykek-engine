@@ -7,20 +7,18 @@
 
 ### Names
 
- Names for properties, methods, parameters, and classes can contain lowercase letters (a-z), uppercase letters (A-Z), digits (0-9), and underscores (\_).
+ Names can contain lowercase letters (a-z), uppercase letters (A-Z), digits (0-9), and underscores (\_).
 
- The first character of a property name, a method name, or a parameter name must be a lowercase letter or an underscore.
+ A _lowercase_ name is a name whose first character is a lowercase letter or an underscore.
 
     i
     infoAboutMe
     askQuestion
     _a
 
- The first character of a class name must be an uppercase letter.
+ An _uppercase_ name is a name whose first character is an uppercase letter.
 
     SomeClassName
-
- Relative class names are supported through the `@` prefix. For example, in a class named `Sports`, `@` is equivalent to `Sports` and `@Team` is equivalent to `SportsTeam`.
 
 
 ### Keywords
@@ -32,7 +30,6 @@
     undefined
     Infinity
     NaN
-    this
     in
 
 
@@ -40,20 +37,40 @@
 
  Comments serve to document lines of code. A comment starts with the character sequence `//` and stops at the end of the line.
 
-    $.status = "alive" // Rumors of my demise have been greatly exaggerated.
+    $.status() = "alive" // Rumors of my demise have been greatly exaggerated.
 
 
-## Values
+## Values and expressions
 
- A value is an entity that can be manipulated by the program.
+ A _value_ is an entity that can be manipulated by the program.
 
  The language supports the following types of values, each with its own built-in methods: [number][./number], [boolean][./boolean], [string][./string], [list][./list], [map][./map], [set][./set], [undefined][./undefined]. All values are immutable.
 
+ An _expression_ specifies the computation of a value. An expression is a value if it doesn't require any further evaluation.
 
-## Expressions
+ Here are examples of expressions that are also values:
 
- An expression specifies the computation of a value.
- 
+    2.5
+    -345
+    true
+    "abc"
+    [3, 4, 5]
+    {"x": 3, "y": 4}
+    #{3, 4, 5}
+    {"odd": [1, 3, 5], "even": [2, 4, 6]}
+    BioFemale
+    undefined
+
+ Here are examples of expressions that are not values:
+
+    "wow".toUpperCase()
+    !true
+    2 + 3
+    [3, 4, 20 - 15]
+    "abcde"[2]
+    Math#
+    Rectangle(10, 10, 20, 20)
+
 
 ### Numbers
 
@@ -184,53 +201,58 @@
  `undefined` stands for an undefined value.
 
 
-### Parameters
+### Parameter references
 
- _param-expr_ := _param-name_ | `$`
+ _ref_ := _lowercase_ | `$`
 
- A parameter expression refers to a parameter from the left-hand side of the rule. For example, the following rule returns parameter `b`:
+ You can refer to a parameter from the left-hand side of the rule. For example, the following rule returns parameter `b`:
 
     $.m(a, b, c) = b
 
- The `$` parameter refers to the object whose method was called. This parameter is sometimes called `this` or `self` in other programming languages.
+ The `$` parameter is the receiver, i.e. the object whose method was called. This parameter is sometimes called `this` or `self` in other programming languages.
 
 
-### Properties
+### Paths
 
- _prop_ := _primary_ `.` _prop-name_
+ _path_ := _uppercase_
 
- A property expression accesses a property of an object. It's a shorthand for a call to the `get` method using the property name as a string key. For example, the expression `a.foo` is equivalent to `a.get("foo")`.
+ A path expression is a list written as a class name (i.e. in CamelCase). For example, `BioSpecies` is equivalent to `["bio", "species"]`.
 
-
-### Indexes
-
- _get_ := _primary_ `[` _expr_ `]`
-
- An index or "get" expression is a shorthand for a call to the `get` method. For example, `a[b]` is equivalent to `a.get(b)`.
+ Relative paths are supported through the `@` prefix. For example, in the `Sports` class, `@` is equivalent to `Sports` and `@Team` is equivalent to `SportsTeam`.
 
 
-### Calls
+### Get
 
- _call_ := [ _primary_ `.` ] _method-name_ `(` [ _args_ ] `)`
+ _get_ := _chain_ `[` _expr_ `]`
 
- _args_ := _expr_ | _args_ `,` _expr_
+ A _get_ expression accesses a property of an object. It's a shorthand for a call to the `get` method of the map. For example, `a[b]` is equivalent to `a.get(b)`.
 
- A call expression calls the receiver's given method with the given arguments. Here are some examples of calls:
 
-    "0123456789".split()
-    {}.set("sky", "blue")
-    myList.push(5)
+### Load
 
- A call without a receiver (i.e. not preceded by a primary expression and a dot) is interpreted as a call to the `Global` object. For example, `parse("234")` is equivalent to `Global.parse("234")`.
+ _load_ := _chain_ `#`
+
+ A _load_ expression loads the object at the given path. It's a shorthand for a call the `load` method of a list. For example, `PolCountry#` is equivalent to `PolCountry.load()` and to `["pol", "country"].load()`.
 
 
 ### Constructors
 
- _constructor_ := _classname_ | _classname_ `(` [ _args_ ] `)`
+ _constructor_ := _chain_ `(` [ _args_ ] `)`
 
- The short-form constructor (only a class name) returns the object with the given name. For example, `Math` returns the object described in the `Math` class.
+ A _constructor_ expression loads the object at the given path, and then calls its `init` method. The arguments in parentheses are given to `init`. For example, the expression `Point(x, y)` is equivalent to `Point#.init(x, y)`.
 
- The long-form constructor calls the `make` method of the object with the given name. The arguments in parentheses are given to `make`. In other words, the expression `Point(x, y)` is equivalent to `Point.make(x, y)`.
+
+### Calls
+
+ _call_ := _chain_ `.` _lowercase_ `(` [ _args_ ] `)`
+
+ _args_ := _expr_ | _args_ `,` _expr_
+
+ A _call_ expression calls the receiver's given method with the given arguments. Here are some examples of calls:
+
+    "0123456789".split()
+    {}.set("sky", "blue")
+    myList.push(5)
 
 
 ### Operators
@@ -239,15 +261,17 @@
 
  _e2_ := _e3_ | _e2_ `&&` _e3_
 
- _e3_ := _e4_ | _e3_ `==` _e4_ | _e3_ `!=` _e4_ | _e3_ `<` _e4_ | _e3_ `<=` _e4_ | _e3_ `>` _e4_ | _e3_ `>=` _e4_
+ _e3_ := _e4_ | _e3_ `==` _e4_ | _e3_ `!=` _e4_ | _e3_ `<` _e4_ | _e3_ `<=` _e4_ | _e3_ `>` _e4_ | _e3_ `>=` _e4_ | _e3_ `in` _e4_
 
  _e4_ := _e5_ | _e4_ `+` _e5_ | _e4_ `-` _e5_ | _e4_ `|` _e5_ | _e4_ `^` _e5_
 
  _e5_ := _eu_ | _e5_ `*` _eu_ | _e5_ `/` _eu_ | _e5_ `%` _eu_ | _e5_ `**` _eu_ | _e5_ `<<` _eu_ | _e5_ `>>` _eu_ | _e5_ `>>>` _eu_ | _e5_ `&` _eu_
 
- _eu_ := _primary_ | `!` _eu_ | `-` _eu_ | `~` _eu_
+ _eu_ := _chain_ | `!` _eu_ | `-` _eu_ | `~` _eu_
 
- _primary_ := _number_ | _boolean_ | _string_ | _list_ | _map_ | _set_ | `undefined` | _param-expr_ | _get_ | _call_ | _constructor_ | `(` _expr_ `)`
+ _chain_ := _primary_ | _get_ | _load_ | _constructor_ | _call_
+
+ _primary_ := _number_ | _boolean_ | _string_ | _list_ | _map_ | _set_ | `undefined` | _ref_ | _path_ | `(` _expr_ `)`
 
  Operators are a shorthand for certain commonly-used calls. They allow expressions to be easier to read. You can support an operator in your class by implementing the corresponding method.
 
@@ -274,6 +298,7 @@
 | a <= b | a.le(b) | Less than or equal
 | a > b | a.gt(b) | Greater than
 | a >= b | a.ge(b) | Greater than or equal
+| a in b | b.has(a) | Membership
 | a && b | a.land(b) | Logical AND
 | a \|\| b | a.lor(b) | Logical OR
 
@@ -282,7 +307,7 @@
     Precedence    Binary operator
        5             *  /  %  **  <<  >>  >>>  &
        4             +  -  |  ^
-       3             ==  !=  <  <=  >  >=
+       3             ==  !=  <  <=  >  >= in
        2             &&
        1             ||
 
@@ -295,84 +320,51 @@
 
  A class declares _properties_ and _methods_ for the object. Properties provide state while methods implement behavior. Both properties and methods are entries in the map.
 
- At run-time, the object described by a class is accessible globally by name. For example, if you write a class named `C`, then the expression `C` anywhere else in the program will return the `C` object.
+ At run-time, the object described by a class is accessible globally by name. For example, if you write a class named `C`, the expression `C#` anywhere else in the program will return the `C` object.
 
- The source code for a class is a series of declarations (one per line). There are property declarations, entry declarations, and rule declarations. They all start with a dollar sign ($).
-
- A declaration sometimes requires an expression to be a _literal_. An expression is a literal if it doesn't contain any calls (including operators, properties and indexes), constructors, or parameters.
-
- Here are examples of expressions that are also literals:
-
-    -345
-    true
-    "abc"
-    [3, 4, 5]
-    {"x": 3, "y": 4}
-    #{3, 4, 5}
-    {"odd": [1, 3, 5], "even": [2, 4, 6]}
-    undefined
-
- Here are examples of expressions that are not literals:
-
-    "wow".toUpperCase()
-    a
-    !true
-    2 + 3
-    [3, 4, 20 - 15]
-    "abcde"[2]
-    Math
-    Rectangle(10, 10, 20, 20)
+ The source code for a class is a series of declarations (one per line). There are two kinds of declarations: property declarations and rule declarations. They both start with a dollar sign ($).
 
 
 ### Property declarations
 
- _prop-decl_ := `$` `.` _prop-name_ `=` _expr_
+ _prop-decl_ := `$` `[` _expr_ `]` `=` _expr_
 
- A property provides state to the object. It's a simple entry in the map using the property name as a string key.
+ A property provides state to the object. It's a simple entry in the map.
 
  For example, if the program contains a class named `C` with the declarations
 
-    $.foo = 118
-    $.bar = true
+    $["foo"] = 118
+    $["bar"] = true
 
- then the expression `C` is equivalent to the expression `{"foo": 118, "bar": true}`.
+ then the expression `C#` is equivalent to the expression `{"foo": 118, "bar": true}`.
 
- The expression in a property declaration must be a literal.
+ Both expressions in a property declaration must be values (i.e. fully-evaluated expressions). Any value can be used as a key, including lists, maps, and sets. Since a class name is a list, it can be used as a key:
 
-
-### Entry declarations
-
- _entry-decl_ := `$` `[` _expr_ `]` `=` _expr_
-
- With an entry declaration, you can add a raw map entry with any type of key:
-
-    $[28] = "Ni"
-
- Both of the expressions in an entry declaration must be literals.
+    $[DemoPopulation] = 300
 
 
 ### Rule declarations
 
- _rule-decl_ := `$` `.` _method-name_ `(` [ _params_ ] `)` `=` _expr_
+ _rule-decl_ := `$` `.` _lowercase_ `(` [ _params_ ] `)` `=` _expr_
 
  _params_ := _param_ | _params_ `,` _param_
 
- _param_ := _param-name_ | _param-name_ `:` _expr_
+ _param_ := _lowercase_ | _lowercase_ `:` _expr_
 
  A rule is the basic building block of the object's behavior. It tells the interpreter how to evaluate a call that matches a certain pattern. It has a left-hand side and right-hand side separated by an equal sign (=). The left-hand side is the pattern to match, and the right-hand side is the expression to return if a call matches the pattern.
 
- The pattern on the left-hand side consists of a method name, a parameter count, and (optionally) a literal value for the last parameter.
+ The pattern on the left-hand side consists of a method name, a parameter count, and (optionally) the value of the last parameter.
 
  Take the following rule:
 
-    $.m(a, b: true) = 3
+    $.m(a, b: true) = 300
 
- It says that if the method `m` is called on this object with 2 other parameters, and if the last parameter is equal to `true`, then we return `3`.
+ It says that if the method named `m` is called on this object with 2 other parameters, and if the last parameter is equal to `true`, then we return `300`.
 
 
 ### Methods
 
- A set of rules with the same name in the same class form a _method_. Each method is an entry in the map with the method name as the key.
+ A set of rules with the same method name form a _method_. Each method is an entry in the map with the method name as the key.
 
  Say, for example, that the source code of a class contains the following method with three rules:
 
@@ -380,7 +372,7 @@
     $.color(fruit: "banana") = "yellow"
     $.color(fruit) = "green"
 
- The code says that if a call is made to the `color` method with 2 parameters (`this` and `fruit`) and if the value of the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
+ The code says that if a call is made to the `color` method with 2 parameters (`$` and `fruit`) and if the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is equal to `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
 
  In the map generated from the source code, this method is an entry with key `"color"` and value
 
@@ -396,10 +388,10 @@
 
 | Example | Meaning
 | --- | ---
-| `{"val": "red"}` | the literal value`"red"`
+| `{"val": "red"}` | the value `"red"`
+| `{"param": 0}` | `$`
 | `{"param": 3}` | the parameter at index 3
 | `{"call": "m", "args": list}` | a call to the method named `m` with a list of arguments
-| `{"path": ["chem", "elem"]}` | the `ChemElem` object
 
  As a programmer you typically don't have to worry about the internal representation of methods. After all, the interpreter takes care of compiling your source code into objects. However, it's good to remember that methods are just map entries, and therefore can be created and called at run-time:
 
@@ -419,22 +411,22 @@
 
  Notice how the number of parameters varies during the computation.
 
-### The `make` method
+### The `init` method
 
- A constructor is the standard way for a class to enable its users to make a range of different objects. Implementing a constructor in your class simply means implementing a `make` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `make` method might look like this:
+ A constructor enables the users of a class to make a range of different objects. Implementing a constructor in your class means implementing an `init` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `init` method might look like this:
 
-    $.make(x, y) = this.set("x", x).set("y", y)
+    $.init(x, y) = $.set(GeomX, x).set(GeomY, y)
 
- A user of the class could then create a new point with a constructor expression like `Point(3, 4)`.
+ A user of the class could then easily create a new point with a constructor expression like `Point(3, 4)`.
 
 
 ### Functions
 
- _func_ := `#!` _func-name_
+ _func_ := `#!/` _lowercase_
 
- A function allows a rule to delegate its work to the interpreter for performance. One of them is `#!sqrt`, which computes the square root of its argument. If your `Math` class contains the rule
+ A function allows a rule to delegate its work to the interpreter for performance. For example, `#!/sqrt` computes the square root of its argument. If your `Math` class contains the rule
 
-    $.squareRoot(x) = #!sqrt
+    $.squareRoot(x) = #!/sqrt
 
  then the expression `Math.squareRoot(9)` will return `3`.
 
@@ -457,9 +449,9 @@
 | `log(x)` | the natural logarithm (base e) of `x`
 | `max(x, y)` | the largest of `x` and `y`
 | `min(x, y)` | the smallest of `x` and `y`
-| `parseFloat(s)` | the number represented by `s`
-| `parseInt(s)` | the integer represented by `s`
-| `parseInt2(s, r)` | the integer represented by `s` with radix `r`
+| `parsefloat(s)` | the number represented by `s`
+| `parseint(s)` | the integer represented by `s`
+| `parseint2(s, r)` | the integer represented by `s` with radix `r`
 | `pow(x, y)` | `x` to the power `y`
 | `round(x)` | `x` rounded to the nearest integer
 | `sin(x)` | the sine of `x`

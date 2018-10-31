@@ -29,11 +29,6 @@ describe("makeObject", function() {
     return makeObject(decls);
   };
   it("makes a prop_decl", function() {
-    const v = make(["$.x = 123"]);
-    const ev = Map.of("x", 123);
-    expect(v).toEqual(ev);
-  });
-  it("makes an entry_decl", function() {
     const v = make(['$["x"] = 456']);
     const ev = Map.of("x", 456);
     expect(v).toEqual(ev);
@@ -116,6 +111,11 @@ describe("makeObject", function() {
     const ev = Map.of(0, undefined);
     expect(v).toEqual(ev);
   });
+  it("makes a path value", function() {
+    const v = make(["$[0] = ABC"]);
+    const ev = Map.of(0, List(["a", "b", "c"]));
+    expect(v).toEqual(ev);
+  });
   it("makes a string value", function() {
     const v = make(['$[0] = "abc\\n\\t"']);
     const ev = Map.of(0, "abc\n\t");
@@ -143,17 +143,12 @@ describe("makeExpr", function() {
   const x = Map({ param: 7 });
   const y = Map({ param: 8 });
   const z = Map({ param: 9 });
-  const Global = Map({ path: List(["global"]) });
+  const Global = Map({ load: List(["global"]) });
 
   const make = function(line) {
     const expr = parseExpr(new Scanner(line));
     return makeExpr(expr, { w: 6, x: 7, y: 8, z: 9 });
   };
-  it("makes x in y", function() {
-    const v = make("x in y");
-    const ev = Map({ call: "has", args: List([y, x]) });
-    expect(v).toEqual(ev);
-  });
   it("makes x || y", function() {
     const v = make("x || y");
     const ev = Map({ call: "lor", args: List([x, y]) });
@@ -192,6 +187,11 @@ describe("makeExpr", function() {
   it("makes x >= y", function() {
     const v = make("x >= y");
     const ev = Map({ call: "ge", args: List([x, y]) });
+    expect(v).toEqual(ev);
+  });
+  it("makes x in y", function() {
+    const v = make("x in y");
+    const ev = Map({ call: "has", args: List([y, x]) });
     expect(v).toEqual(ev);
   });
   it("makes x + y", function() {
@@ -264,19 +264,25 @@ describe("makeExpr", function() {
     const ev = Map({ call: "not", args: List([x]) });
     expect(v).toEqual(ev);
   });
-  it("makes a method call", function() {
-    const v = make("x.m(y, z)");
-    const ev = Map({ call: "m", args: List([x, y, z]) });
-    expect(v).toEqual(ev);
-  });
-  it("makes a property", function() {
-    const v = make("x.p");
-    const ev = Map({ call: "get", args: List([x, Map({ val: "p" })]) });
-    expect(v).toEqual(ev);
-  });
-  it("makes x[y]", function() {
+  it("makes a get_expr", function() {
     const v = make("x[y]");
     const ev = Map({ call: "get", args: List([x, y]) });
+    expect(v).toEqual(ev);
+  });
+  it("makes a load_expr", function() {
+    const v = make("x#");
+    const ev = Map({ call: "load", args: List([x]) });
+    expect(v).toEqual(ev);
+  });
+  it("makes a constructor_expr", function() {
+    const v = make("x(y, z)");
+    const p = Map({ call: "load", args: List([x]) });
+    const ev = Map({ call: "init", args: List([p, y, z]) });
+    expect(v).toEqual(ev);
+  });
+  it("makes a call_expr", function() {
+    const v = make("x.m(y, z)");
+    const ev = Map({ call: "m", args: List([x, y, z]) });
     expect(v).toEqual(ev);
   });
   it("makes a positive number", function() {
@@ -314,31 +320,20 @@ describe("makeExpr", function() {
     const ev = Map({ val: "abc\n\t" });
     expect(v).toEqual(ev);
   });
-  it("makes a path", function() {
+  it("makes a path expression", function() {
     const v1 = make("Aaz_09");
-    const ev1 = Map({ path: List(["aaz_09"]) });
+    const ev1 = Map({ val: List(["aaz_09"]) });
     expect(v1).toEqual(ev1);
     const v2 = make("Aaz_09Baz_09");
-    const ev2 = Map({ path: List(["aaz_09", "baz_09"]) });
+    const ev2 = Map({ val: List(["aaz_09", "baz_09"]) });
     expect(v2).toEqual(ev2);
     const v3 = make("Aaz_09Baz_09Caz_09");
-    const ev3 = Map({ path: List(["aaz_09", "baz_09", "caz_09"]) });
+    const ev3 = Map({ val: List(["aaz_09", "baz_09", "caz_09"]) });
     expect(v3).toEqual(ev3);
   });
-  it("makes a constructor", function() {
-    const v = make("A(x, y)");
-    const p = Map({ path: List(["a"]) });
-    const ev = Map({ call: "make", args: List([p, x, y]) });
-    expect(v).toEqual(ev);
-  });
   it("makes a function expression", function() {
-    const v = make("#!abc");
+    const v = make("#!/abc");
     const ev = Map({ func: "abc" });
-    expect(v).toEqual(ev);
-  });
-  it("makes a global method call", function() {
-    const v = make("m(x, y)");
-    const ev = Map({ call: "m", args: List([Global, x, y]) });
     expect(v).toEqual(ev);
   });
   it("makes a parameter expression", function() {

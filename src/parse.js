@@ -24,7 +24,7 @@ function parseDecl(s) {
   const ds = s.tk("$");
   if (s.tt == "[") {
     const decl = [
-      "entry_decl",
+      "prop_decl",
       ds,
       s.tk("["),
       parseExpr1(s),
@@ -35,24 +35,17 @@ function parseDecl(s) {
     s.tk("eof");
     return decl;
   }
-  const dot = s.tk(".");
-  const lc = s.tk("lc");
-  if (s.tt == "(") {
-    const decl = [
-      "rule_decl",
-      ds,
-      dot,
-      lc,
-      s.tk("("),
-      parseParams(s),
-      s.tk(")"),
-      s.tk("="),
-      parseExpr1(s)
-    ];
-    s.tk("eof");
-    return decl;
-  }
-  const decl = ["prop_decl", ds, dot, lc, s.tk("="), parseExpr1(s)];
+  const decl = [
+    "rule_decl",
+    ds,
+    s.tk("."),
+    s.tk("lc"),
+    s.tk("("),
+    parseParams(s),
+    s.tk(")"),
+    s.tk("="),
+    parseExpr1(s)
+  ];
   s.tk("eof");
   return decl;
 }
@@ -145,14 +138,26 @@ function parseUExpr(s) {
   return parseCExpr(s);
 }
 
-// Parses a call expression.
+// Parses an expression chain.
 function parseCExpr(s) {
   var expr = parseAExpr(s);
   while (true) {
-    if (s.tt == ".") {
-      expr = ["dot_expr", expr, s.tk("."), parseAExpr(s)];
-    } else if (s.tt == "[") {
+    if (s.tt == "[") {
       expr = ["get_expr", expr, s.tk("["), parseExpr1(s), s.tk("]")];
+    } else if (s.tt == "#") {
+      expr = ["load_expr", expr, s.tk("#")];
+    } else if (s.tt == "(") {
+      expr = ["constructor_expr", expr, s.tk("("), parseArgs(s), s.tk(")")];
+    } else if (s.tt == ".") {
+      expr = [
+        "call_expr",
+        expr,
+        s.tk("."),
+        s.tk("lc"),
+        s.tk("("),
+        parseArgs(s),
+        s.tk(")")
+      ];
     } else {
       break;
     }
@@ -174,19 +179,11 @@ function parseAExpr(s) {
   } else if (s.tt == "const") {
     return ["const_expr", s.tk("const")];
   } else if (s.tt == "uc") {
-    const uc = s.tk("uc");
-    if (s.tt == "(") {
-      return ["make_expr", uc, s.tk("("), parseArgs(s), s.tk(")")];
-    }
-    return ["path_expr", uc];
-  } else if (s.tt == "#!") {
-    return ["func_expr", s.tk("#!"), s.tk("lc")];
+    return ["path_expr", s.tk("uc")];
+  } else if (s.tt == "#!/") {
+    return ["func_expr", s.tk("#!/"), s.tk("lc")];
   } else if (s.tt == "lc") {
-    const lc = s.tk("lc");
-    if (s.tt == "(") {
-      return ["call_expr", lc, s.tk("("), parseArgs(s), s.tk(")")];
-    }
-    return ["param_expr", lc];
+    return ["param_expr", s.tk("lc")];
   } else if (s.tt == "$") {
     return ["this_expr", s.tk("$")];
   } else if (s.tt == "[") {

@@ -43,7 +43,7 @@ describe("Scanner", function() {
       }
       for (var token of [
         "#{",
-        "#!",
+        "#!/",
         "&&",
         "||",
         "<<",

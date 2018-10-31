@@ -26,14 +26,9 @@ describe("parseDecl()", function() {
     const ev = ["rule_decl", "$", ".", "m", "(", [], ")", "=", a];
     expect(v).toEqual(ev);
   });
-  it("parses a entry_decl", function() {
-    const v = parse("$[b] = a");
-    const ev = ["entry_decl", "$", "[", b, "]", "=", a];
-    expect(v).toEqual(ev);
-  });
   it("parses a prop_decl", function() {
-    const v = parse("$.b = a");
-    const ev = ["prop_decl", "$", ".", "b", "=", a];
+    const v = parse("$[b] = a");
+    const ev = ["prop_decl", "$", "[", b, "]", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a rule_decl with 0 params", function() {
@@ -229,18 +224,53 @@ describe("parseExpr()", function() {
       expect(v2).toEqual(ev2);
     }
   });
-  it("parses a dot expression", function() {
-    const v1 = parse("a.b");
-    const ev1 = ["dot_expr", a, ".", b];
-    expect(v1).toEqual(ev1);
-    const v2 = parse("a.b.c");
-    const ev2 = ["dot_expr", ["dot_expr", a, ".", b], ".", c];
-    expect(v2).toEqual(ev2);
-  });
-  it("parses an index/get expression", function() {
+  it("parses a get expression", function() {
     const v = parse("a[b]");
     const ev = ["get_expr", a, "[", b, "]"];
     expect(v).toEqual(ev);
+    // chain
+    const v2 = parse("a[b]#");
+    const ev2 = ["load_expr", ["get_expr", a, "[", b, "]"], "#"];
+    expect(v2).toEqual(ev2);
+  });
+  it("parses a load expression", function() {
+    const v = parse("a#");
+    const ev = ["load_expr", a, "#"];
+    expect(v).toEqual(ev);
+    // chain
+    const v2 = parse("a##");
+    const ev2 = ["load_expr", ["load_expr", a, "#"], "#"];
+    expect(v2).toEqual(ev2);
+  });
+  it("parses a constructor expression", function() {
+    const v0 = parse("a()");
+    const ev0 = ["constructor_expr", a, "(", [], ")"];
+    expect(v0).toEqual(ev0);
+    const v1 = parse("a(b)");
+    const ev1 = ["constructor_expr", a, "(", [b], ")"];
+    expect(v1).toEqual(ev1);
+    const v2 = parse("a(b, c)");
+    const ev2 = ["constructor_expr", a, "(", [b, c], ")"];
+    expect(v2).toEqual(ev2);
+    // chain
+    const v3 = parse("a()#");
+    const ev3 = ["load_expr", ["constructor_expr", a, "(", [], ")"], "#"];
+    expect(v3).toEqual(ev3);
+  });
+  it("parses a call expression", function() {
+    const v0 = parse("a.m()");
+    const ev0 = ["call_expr", a, ".", "m", "(", [], ")"];
+    expect(v0).toEqual(ev0);
+    const v1 = parse("a.m(b)");
+    const ev1 = ["call_expr", a, ".", "m", "(", [b], ")"];
+    expect(v1).toEqual(ev1);
+    const v2 = parse("a.m(b, c)");
+    const ev2 = ["call_expr", a, ".", "m", "(", [b, c], ")"];
+    expect(v2).toEqual(ev2);
+    // chain
+    const v3 = parse("a.m()#");
+    const ev3 = ["load_expr", ["call_expr", a, ".", "m", "(", [], ")"], "#"];
+    expect(v3).toEqual(ev3);
   });
   it("parses a parenthesized expression", function() {
     const v = parse("(a)");
@@ -267,44 +297,22 @@ describe("parseExpr()", function() {
     const ev = ["const_expr", "true"];
     expect(v).toEqual(ev);
   });
-  it("parses a make expression", function() {
-    const v0 = parse("A()");
-    const ev0 = ["make_expr", "A", "(", [], ")"];
-    expect(v0).toEqual(ev0);
-    const v1 = parse("A(b)");
-    const ev1 = ["make_expr", "A", "(", [b], ")"];
-    expect(v1).toEqual(ev1);
-    const v2 = parse("A(b, c)");
-    const ev2 = ["make_expr", "A", "(", [b, c], ")"];
-    expect(v2).toEqual(ev2);
-  });
   it("parses a path expression", function() {
     const v = parse("A");
     const ev = ["path_expr", "A"];
     expect(v).toEqual(ev);
   });
   it("parses a function expression", function() {
-    const v = parse("#!a");
-    const ev = ["func_expr", "#!", "a"];
+    const v = parse("#!/a");
+    const ev = ["func_expr", "#!/", "a"];
     expect(v).toEqual(ev);
-  });
-  it("parses a global call expression", function() {
-    const v0 = parse("m()");
-    const ev0 = ["call_expr", "m", "(", [], ")"];
-    expect(v0).toEqual(ev0);
-    const v1 = parse("m(b)");
-    const ev1 = ["call_expr", "m", "(", [b], ")"];
-    expect(v1).toEqual(ev1);
-    const v2 = parse("m(b, c)");
-    const ev2 = ["call_expr", "m", "(", [b, c], ")"];
-    expect(v2).toEqual(ev2);
   });
   it("parses a parameter expression", function() {
     const v = parse("a");
     const ev = ["param_expr", "a"];
     expect(v).toEqual(ev);
   });
-  it("parses a this expression", function() {
+  it("parses a $ expression", function() {
     const v = parse("$");
     const ev = ["this_expr", "$"];
     expect(v).toEqual(ev);

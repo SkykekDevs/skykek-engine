@@ -17,10 +17,8 @@ function ruleParams(paramsN) {
 function checkDecl(n) {
   const t = n[0];
   if (t == "prop_decl") {
-    checkLiteral(n[5]);
-  } else if (t == "entry_decl") {
-    checkLiteral(n[3]);
-    checkLiteral(n[6]);
+    checkValue(n[3]);
+    checkValue(n[6]);
   } else if (t == "rule_decl") {
     checkParams(n[5]);
     checkExpr(n[8], ruleParams(n[5]));
@@ -50,7 +48,7 @@ function checkParam(n) {
   const t = n[0];
   // nothing to do for 'unmatched_param'
   if (t == "matched_param") {
-    checkLiteral(n[3]);
+    checkValue(n[3]);
   }
 }
 
@@ -65,37 +63,34 @@ function checkExpr(n, params) {
     checkExpr(n[3], params);
   } else if (t == "unary_expr") {
     checkExpr(n[2], params);
-  } else if (t == "dot_expr") {
-    checkExpr(n[1], params);
-    const sub = n[3][0];
-    if (sub != "param_expr" && sub != "call_expr") {
-      throw new Error("a dot must be followed by a property name or a call");
-    }
-    if (sub == "call_expr") checkExpr(n[3], params);
   } else if (t == "get_expr") {
     checkExpr(n[1], params);
     checkExpr(n[3], params);
+  } else if (t == "load_expr") {
+    checkExpr(n[1], params);
+  } else if (t == "constructor_expr") {
+    checkExpr(n[1], params);
+    const args = n[3];
+    if (1 + args.length > MAX_PARAMS) {
+      throw new Error("too many arguments");
+    }
+    for (var i = 0; i < args.length; i++) {
+      checkExpr(args[i], params);
+    }
+  } else if (t == "call_expr") {
+    checkExpr(n[1], params);
+    const args = n[5];
+    if (1 + args.length > MAX_PARAMS) {
+      throw new Error("too many arguments");
+    }
+    for (var i = 0; i < args.length; i++) {
+      checkExpr(args[i], params);
+    }
   } else if (t == "str_expr") {
     try {
       JSON.parse(n[1]);
     } catch (err) {
       throw new Error("unknown character escape in string");
-    }
-  } else if (t == "make_expr") {
-    if (1 + n[3].length > MAX_PARAMS) {
-      throw new Error("too many arguments in constructor");
-    }
-    const args = n[3];
-    for (var i = 0; i < args.length; i++) {
-      checkExpr(args[i], params);
-    }
-  } else if (t == "call_expr") {
-    if (1 + n[3].length > MAX_PARAMS) {
-      throw new Error("too many arguments in method call");
-    }
-    const args = n[3];
-    for (var i = 0; i < args.length; i++) {
-      checkExpr(args[i], params);
     }
   } else if (t == "param_expr") {
     const p = n[1];
@@ -122,53 +117,46 @@ function checkExpr(n, params) {
   }
 }
 
-// Checks a literal for errors.
+const VALUES = {
+  num_expr: 1,
+  negnum_expr: 1,
+  const_expr: 1,
+  path_expr: 1,
+  str_expr: 1,
+  list_expr: 1,
+  map_expr: 1,
+  set_expr: 1
+};
+
+// Checks a value for errors.
 // n is an expression node.
-function checkLiteral(n) {
+function checkValue(n) {
   const t = n[0];
-  // nothing to do for 'num_expr', 'negnum_expr', 'const_expr'.
-  if (t == "binary_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "unary_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "dot_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "get_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "str_expr") {
+  if (!VALUES.hasOwnProperty(t)) {
+    throw new Error("expected a value");
+  }
+  if (t == "str_expr") {
     try {
       JSON.parse(n[1]);
     } catch (err) {
       throw new Error("unknown character escape in string");
     }
-  } else if (t == "make_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "call_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "param_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "this_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "path_expr") {
-    throw new Error("expected a literal");
-  } else if (t == "func_expr") {
-    throw new Error("expected a literal");
   } else if (t == "list_expr") {
     const exprs = n[2];
     for (var i = 0; i < exprs.length; i++) {
-      checkLiteral(exprs[i]);
+      checkValue(exprs[i]);
     }
   } else if (t == "map_expr") {
     const pairs = n[2];
     for (var i = 0; i < pairs.length; i++) {
       const pair = pairs[i];
-      checkLiteral(pair[1]);
-      checkLiteral(pair[3]);
+      checkValue(pair[1]);
+      checkValue(pair[3]);
     }
   } else if (t == "set_expr") {
     const exprs = n[2];
     for (var i = 0; i < exprs.length; i++) {
-      checkLiteral(exprs[i]);
+      checkValue(exprs[i]);
     }
   }
 }
