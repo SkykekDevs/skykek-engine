@@ -36,12 +36,12 @@ describe("compileObject", function() {
       expect(err.line).toEqual('$.b() = "\\z"');
     }
   });
-  it("joins lines that end with a backslash (line continuation)", function() {
+  it("line continuation", function() {
     const v = compileObject(
       ["r"],
-      '$["a"] = \\\n3\n$["b"] = \\   \n4\n$["c"] = 5'
+      '$["a"] = [\n3,   	\n4,\n5,\n]\n$["b"] = {\n"x": 3,\n"y": 4,\n}\n'
     );
-    const obj = Map.of("a", 3, "b", 4, "c", 5);
+    const obj = Map.of("a", List([3, 4, 5]), "b", Map({ x: 3, y: 4 }));
     expect(v).toEqual(obj);
   });
   it("renames relative class names", function() {
