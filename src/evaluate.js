@@ -388,11 +388,11 @@ const BUILTIN = {
         if (typeof a[2] != "string") return undefined;
         var r = null;
         try {
-          r = new RegExp(a[2]);
+          r = new RegExp(a[1]);
         } catch (e) {
           return undefined;
         }
-        return a[0].replace(r, a[1]);
+        return a[0].replace(r, a[2]);
       },
       4: function(a) {
         if (typeof a[1] != "string") return undefined;
@@ -400,11 +400,11 @@ const BUILTIN = {
         if (typeof a[3] != "string") return undefined;
         var r = null;
         try {
-          r = new RegExp(a[2], a[3]);
+          r = new RegExp(a[1], a[3]);
         } catch (e) {
           return undefined;
         }
-        return a[0].replace(r, a[1]);
+        return a[0].replace(r, a[2]);
       }
     },
     search: {

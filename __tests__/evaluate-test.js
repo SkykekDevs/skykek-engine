@@ -578,22 +578,22 @@ describe("string", function() {
     expect(ev('"abc".repeat(-1)')).toEqual(undefined);
     expect(ev('"abc".repeat(Infinity)')).toEqual(undefined);
   });
-  it("implements replace(newSubstr, pattern)", function() {
-    expect(ev('"ababa".replace("BA", "b.")')).toEqual("aBAba");
-    expect(ev('"ababa".replace("BA", "z.")')).toEqual("ababa");
-    expect(ev('"ababa".replace([], "b.")')).toEqual(undefined);
-    expect(ev('"ababa".replace("BA", [])')).toEqual(undefined);
-    expect(ev('"ababa".replace("BA", "[")')).toEqual(undefined);
+  it("implements replace(pattern, newSubstr)", function() {
+    expect(ev('"ababa".replace("b.", "BA")')).toEqual("aBAba");
+    expect(ev('"ababa".replace("z.", "BA")')).toEqual("ababa");
+    expect(ev('"ababa".replace([], "BA")')).toEqual(undefined);
+    expect(ev('"ababa".replace("[", "BA")')).toEqual(undefined);
+    expect(ev('"ababa".replace("b.", [])')).toEqual(undefined);
   });
-  it("implements replace(newSubstr, pattern, flags)", function() {
-    expect(ev('"ababa".replace("BA", "b.", "")')).toEqual("aBAba");
-    expect(ev('"ababa".replace("<$&>", "b.", "")')).toEqual("a<ba>ba");
-    expect(ev('"ababa".replace("BA", "b.", "g")')).toEqual("aBABA");
-    expect(ev('"ababa".replace("BA", "z.", "g")')).toEqual("ababa");
-    expect(ev('"ababa".replace([], "b.", "g")')).toEqual(undefined);
-    expect(ev('"ababa".replace("BA", [], "g")')).toEqual(undefined);
-    expect(ev('"ababa".replace("BA", "[", "g")')).toEqual(undefined);
-    expect(ev('"ababa".replace("BA", "b.", "z")')).toEqual(undefined);
+  it("implements replace(pattern, newSubstr, flags)", function() {
+    expect(ev('"ababa".replace("b.", "BA", "")')).toEqual("aBAba");
+    expect(ev('"ababa".replace("b.", "<$&>", "")')).toEqual("a<ba>ba");
+    expect(ev('"ababa".replace("b.", "BA", "g")')).toEqual("aBABA");
+    expect(ev('"ababa".replace("z.", "BA", "g")')).toEqual("ababa");
+    expect(ev('"ababa".replace([], "BA", "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("[", "BA", "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("b.", [], "g")')).toEqual(undefined);
+    expect(ev('"ababa".replace("b.", "BA", "z")')).toEqual(undefined);
   });
   it("implements search(pattern)", function() {
     expect(ev('"abcde".search("cd")')).toEqual(2);
