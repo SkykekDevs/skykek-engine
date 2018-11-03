@@ -34,14 +34,15 @@ function compileObject(path, source) {
   });
   var decls = [];
   for (var i = 0; i < objLines.length; i++) {
+    var scanner = new Scanner(objLines[i]);
     try {
-      var decl = parseDecl(new Scanner(objLines[i]));
+      var decl = parseDecl(scanner);
       checkDecl(decl);
       renameDecl(decl, name);
       decls.push(decl);
     } catch (err) {
       err.classname = name;
-      err.line = objLines[i];
+      err.line = scanner.show();
       throw err;
     }
   }

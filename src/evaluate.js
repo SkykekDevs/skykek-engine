@@ -1174,14 +1174,14 @@ function evaluate(expr, tree) {
   var stepcount = 0;
   var startTime = Date.now();
   while (stack.length > 1) {
+    const call = stack.pop();
+    stepcount++;
     if (stepcount > 1000) {
       stepcount = 0;
       if (Date.now() > startTime + 1000) {
         throw evalError(call, "too many evaluation steps");
       }
     }
-    stepcount++;
-    const call = stack.pop();
     const mName = call.mName;
     const args = call.args;
     const size = args.length;

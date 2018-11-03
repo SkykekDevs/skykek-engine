@@ -27,6 +27,22 @@
 | `x1 > x2` |  Greater than
 | `x1 >= x2` | Greater than or equal
 
+## `x.isFinite()`
+
+ Determines whether `x` is a finite number.
+
+## `x.isInteger()`
+
+ Determines whether `x` is an integer.
+
+## `x.isNaN()`
+
+ Determines whether `x` is NaN.
+
+## `x.isSafeInteger()`
+
+ Determines whether `x` is a number that is a safe integer.
+
 ## `x.toExponential([fractionDigits])`
 
  Returns a string representing `x` in exponential notation. **fractionDigits** is the number of digits after the decimal point. If the argument is omitted, defaults to as many digits as necessary to specify `x`.

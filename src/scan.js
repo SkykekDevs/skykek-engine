@@ -65,4 +65,10 @@ Scanner.prototype.tk = function(tt) {
   return token;
 };
 
+// Returns the part of the line up to and including the current token (for error reporting).
+Scanner.prototype.show = function(tt) {
+  var i = Math.min(this.i_ + 1, this.tokens_.length);
+  return this.tokens_.slice(0, i).join("");
+};
+
 exports.Scanner = Scanner;
