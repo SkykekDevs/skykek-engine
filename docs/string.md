@@ -113,7 +113,7 @@
 
  Returns a string containing the specified number of copies of `s`. `count` is the number of times to repeat `s`.
 
-## `s.replace(newSubstr, pattern[, flags])`
+## `s.replace(pattern, newSubstr[, flags])`
 
  Returns a string with the occurrences of a regular expression in `s` replaced by a new string. `newSubstr` is the string that replaces the matched substrings of `s`. `pattern` and `flags` are strings describing the regular expression.
 
