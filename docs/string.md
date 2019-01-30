@@ -170,6 +170,10 @@
 
  Returns a string representing `s`. For example, `"abc".toString()` is equal to `"\"abc\""`.
 
+## `s.load()`
+
+ Returns the object of the class named `s`.
+
 ## `s.type()`
 
  Returns `"string"`.

@@ -113,7 +113,7 @@ describe("makeObject", function() {
   });
   it("makes a path value", function() {
     const v = make(["$[0] = ABC"]);
-    const ev = Map.of(0, List(["a", "b", "c"]));
+    const ev = Map.of(0, "ABC");
     expect(v).toEqual(ev);
   });
   it("makes a string value", function() {
@@ -143,7 +143,6 @@ describe("makeExpr", function() {
   const x = Map({ param: 7 });
   const y = Map({ param: 8 });
   const z = Map({ param: 9 });
-  const Global = Map({ load: List(["global"]) });
 
   const make = function(line) {
     const expr = parseExpr(new Scanner(line));
@@ -320,15 +319,15 @@ describe("makeExpr", function() {
     const ev = Map({ val: "abc\n\t" });
     expect(v).toEqual(ev);
   });
-  it("makes a path expression", function() {
+  it("makes a name expression", function() {
     const v1 = make("Aaz_09");
-    const ev1 = Map({ val: List(["aaz_09"]) });
+    const ev1 = Map({ val: "Aaz_09" });
     expect(v1).toEqual(ev1);
     const v2 = make("Aaz_09Baz_09");
-    const ev2 = Map({ val: List(["aaz_09", "baz_09"]) });
+    const ev2 = Map({ val: "Aaz_09Baz_09" });
     expect(v2).toEqual(ev2);
     const v3 = make("Aaz_09Baz_09Caz_09");
-    const ev3 = Map({ val: List(["aaz_09", "baz_09", "caz_09"]) });
+    const ev3 = Map({ val: "Aaz_09Baz_09Caz_09" });
     expect(v3).toEqual(ev3);
   });
   it("makes a function expression", function() {

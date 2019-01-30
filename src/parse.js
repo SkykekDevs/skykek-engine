@@ -179,7 +179,7 @@ function parseAExpr(s) {
   } else if (s.tt == "const") {
     return ["const_expr", s.tk("const")];
   } else if (s.tt == "uc") {
-    return ["path_expr", s.tk("uc")];
+    return ["name_expr", s.tk("uc")];
   } else if (s.tt == "#!/") {
     return ["func_expr", s.tk("#!/"), s.tk("lc")];
   } else if (s.tt == "lc") {

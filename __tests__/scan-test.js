@@ -29,7 +29,7 @@ describe("Scanner", function() {
       for (var token of ["Abc2_", "AbcDef2_"]) {
         expect(new Scanner(token).tk("uc")).toEqual(token);
       }
-      for (var token of ["@", "@Abc2_", "@AbcDef2_"]) {
+      for (var token of ["@Abc2_", "@AbcDef2_"]) {
         expect(new Scanner(token).tk("uc")).toEqual(token);
       }
       for (var token of ["98", "0", "2.3", "0x09afAF", "Infinity"]) {

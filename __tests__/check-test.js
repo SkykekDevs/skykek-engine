@@ -136,7 +136,7 @@ describe("checkValue", function() {
       check("$[0] = true");
     }).not.toThrow();
   });
-  it("checks a path_expr as a value", function() {
+  it("checks a name_expr as a value", function() {
     expect(function() {
       check("$[0] = ABC");
     }).not.toThrow();
@@ -288,7 +288,7 @@ describe("checkExpr", function() {
       check("NaN");
     }).not.toThrow();
   });
-  it("checks a path_expr", function() {
+  it("checks a name_expr", function() {
     expect(function() {
       check("ABC");
     }).not.toThrow();

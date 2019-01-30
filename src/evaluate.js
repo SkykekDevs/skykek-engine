@@ -1167,10 +1167,10 @@ function Call(mName, args, caller, index) {
 
 const EMPTY_OBJECT = Map({});
 
-// Evaluates an expression using the given class tree.
-function evaluate(expr, tree) {
+// Evaluates an expression using the given classes.
+function evaluate(expr, classes) {
   var stack = [new Call("<root-call>", [undefined], -1, 0)];
-  alloc(tree, expr, [], stack, 0, 0);
+  alloc(classes, expr, [], stack, 0, 0);
   var stepcount = 0;
   var startTime = Date.now();
   while (stack.length > 1) {
@@ -1196,19 +1196,19 @@ function evaluate(expr, tree) {
           const lastArg = args[size - 1];
           if (byParam.has(lastArg)) {
             const e = byParam.get(lastArg);
-            alloc(tree, e, args, stack, call.caller, call.index);
+            alloc(classes, e, args, stack, call.caller, call.index);
             continue;
           } else if (byParam.has(undefined)) {
             const e = byParam.get(undefined);
-            alloc(tree, e, args, stack, call.caller, call.index);
+            alloc(classes, e, args, stack, call.caller, call.index);
             continue;
           }
         }
       }
     }
-    // If this is a call to list.load, execute the call right here.
-    if (type == "list" && mName === "load") {
-      stack[call.caller].args[call.index] = tree.get(this_, undefined);
+    // If this is a call to string.load, execute the call right here.
+    if (type == "string" && mName === "load") {
+      stack[call.caller].args[call.index] = classes.get(this_, undefined);
       continue;
     }
     // Try to find a built-in rule matching this call.
@@ -1227,7 +1227,7 @@ function evaluate(expr, tree) {
 
 // For a call expression, allocates the call onto the stack.
 // For other expressions, assigns the value to its destination.
-function alloc(tree, expr, params, stack, caller, index) {
+function alloc(classes, expr, params, stack, caller, index) {
   if (!Map.isMap(expr)) {
     stack[caller].args[index] = undefined;
     return;
@@ -1245,7 +1245,7 @@ function alloc(tree, expr, params, stack, caller, index) {
     stack.push(new Call(expr.get("call"), args.toArray(), caller, index));
     const thisCall = stack.length - 1;
     for (var i = 0; i < args.size; i++) {
-      alloc(tree, args.get(i), params, stack, thisCall, i);
+      alloc(classes, args.get(i), params, stack, thisCall, i);
     }
     return;
   } else if (expr.has("param")) {

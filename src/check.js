@@ -57,7 +57,7 @@ function checkParam(n) {
 function checkExpr(n, params) {
   const t = n[0];
   // nothing to do for 'num_expr', 'negnum_expr', 'this_expr',
-  // 'const_expr', 'path_expr', 'func_expr'.
+  // 'const_expr', 'name_expr', 'func_expr'.
   if (t == "binary_expr") {
     checkExpr(n[1], params);
     checkExpr(n[3], params);
@@ -121,7 +121,7 @@ const VALUES = {
   num_expr: 1,
   negnum_expr: 1,
   const_expr: 1,
-  path_expr: 1,
+  name_expr: 1,
   str_expr: 1,
   list_expr: 1,
   map_expr: 1,

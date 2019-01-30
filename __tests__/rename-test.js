@@ -18,8 +18,8 @@ describe("renameDecl()", function() {
     renameDecl(decl, "M");
     return decl;
   };
-  const MA = ["path_expr", "MA"];
-  const MB = ["path_expr", "MB"];
+  const MA = ["name_expr", "MA"];
+  const MB = ["name_expr", "MB"];
 
   it("renames a prop_decl", function() {
     const v = rename("$[@A] = @B");
@@ -40,8 +40,8 @@ describe("renameExpr()", function() {
     renameExpr(expr, "M");
     return expr;
   };
-  const MA = ["path_expr", "MA"];
-  const MB = ["path_expr", "MB"];
+  const MA = ["name_expr", "MA"];
+  const MB = ["name_expr", "MB"];
   it("renames a binary_expr", function() {
     const v = rename("@A && @B");
     const ev = ["binary_expr", MA, "&&", MB];
@@ -72,15 +72,12 @@ describe("renameExpr()", function() {
     const ev = ["call_expr", MA, ".", "m", "(", [MB], ")"];
     expect(v).toEqual(ev);
   });
-  it("renames a path_expr", function() {
+  it("renames a name_expr", function() {
     const vA = rename("A");
-    const evA = ["path_expr", "A"];
+    const evA = ["name_expr", "A"];
     expect(vA).toEqual(evA);
-    const vM = rename("@");
-    const evM = ["path_expr", "M"];
-    expect(vM).toEqual(evM);
     const vMA = rename("@A");
-    const evMA = ["path_expr", "MA"];
+    const evMA = ["name_expr", "MA"];
     expect(vMA).toEqual(evMA);
   });
   it("renames a list_expr", function() {

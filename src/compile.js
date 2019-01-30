@@ -25,8 +25,7 @@ const makeObject = make.makeObject;
 const makeExpr = make.makeExpr;
 
 // Compiles an object from its source code.
-function compileObject(path, source) {
-  const name = nameFromPath(path);
+function compileObject(namespace, localname, source) {
   source = source.replace(/([[{(,])[ \t]*\n/g, "$1"); // line continuation
   const lines = source.split("\n");
   const objLines = lines.filter(function(line) {
@@ -38,10 +37,10 @@ function compileObject(path, source) {
     try {
       var decl = parseDecl(scanner);
       checkDecl(decl);
-      renameDecl(decl, name);
+      renameDecl(decl, namespace);
       decls.push(decl);
     } catch (err) {
-      err.classname = name;
+      err.name = namespace + localname;
       err.line = scanner.show();
       throw err;
     }
@@ -50,22 +49,11 @@ function compileObject(path, source) {
 }
 
 // Compiles an expression from a source string (e.g. '2 + 2').
-function compileExpr(path, line) {
-  const name = nameFromPath(path);
+function compileExpr(namespace, line) {
   var expr = parseExpr(new Scanner(line));
   checkExpr(expr, {});
-  renameExpr(expr, name);
+  renameExpr(expr, namespace);
   return makeExpr(expr, {});
-}
-
-// Returns the name of a class from its path.
-// e.g. nameFromPath(["abc", "def"]) == "AbcDef"
-function nameFromPath(path) {
-  return path
-    .map(function(s) {
-      return s.charAt(0).toUpperCase() + s.slice(1);
-    })
-    .join("");
 }
 
 exports.compileObject = compileObject;

@@ -11,9 +11,9 @@
 
  A _lowercase_ name is a name whose first character is a lowercase letter or an underscore.
 
+    someMethodName
     i
     infoAboutMe
-    askQuestion
     _a
 
  An _uppercase_ name is a name whose first character is an uppercase letter.
@@ -212,27 +212,20 @@
  The `$` parameter is the receiver, i.e. the object whose method was called. This parameter is sometimes called `this` or `self` in other programming languages.
 
 
-### Paths
+### Class names
 
- _path_ := _uppercase_
+ _name_ := _uppercase_
 
- A path expression is a list written as a class name (i.e. in CamelCase). For example, `BioSpecies` is equivalent to `["bio", "species"]`.
+ A class name expression is a string with the name as its content. For example, `BioSpecies` is equivalent to `"BioSpecies"`.
 
- Relative paths are supported through the `@` prefix. For example, in the `Sports` class, `@` is equivalent to `Sports` and `@Team` is equivalent to `SportsTeam`.
-
-
-### Get
-
- _get_ := _chain_ `[` _expr_ `]`
-
- A _get_ expression accesses a property of an object. It's a shorthand for a call to the `get` method of the map. For example, `a[b]` is equivalent to `a.get(b)`.
+ Relative names are supported through the `@` prefix. For example, in the `Sports` namespace, `@Team` is equivalent to `SportsTeam`.
 
 
 ### Load
 
  _load_ := _chain_ `#`
 
- A _load_ expression loads the object at the given path. It's a shorthand for a call the `load` method of a list. For example, `PolCountry#` is equivalent to `PolCountry.load()` and to `["pol", "country"].load()`.
+ A _load_ expression loads the object of the class with the given name. It's a shorthand for a call the `load` method of the string. For example, `PolCountry#` is equivalent to `PolCountry.load()` and to `"PolCountry".load()`.
 
 
 ### Constructors
@@ -253,6 +246,13 @@
     "0123456789".split()
     {}.set("sky", "blue")
     myList.push(5)
+
+
+### Get
+
+ _get_ := _chain_ `[` _expr_ `]`
+
+ A _get_ expression accesses a property of an object. It's a shorthand for a call to the `get` method of the map. For example, `a[b]` is equivalent to `a.get(b)`.
 
 
 ### Operators
@@ -338,7 +338,7 @@
 
  then the expression `C#` is equivalent to the expression `{"foo": 118, "bar": true}`.
 
- Both expressions in a property declaration must be values (i.e. fully-evaluated expressions). Any value can be used as a key, including lists, maps, and sets. Since a class name is a list, it can be used as a key:
+ Both expressions in a property declaration must be values (i.e. fully-evaluated expressions). Any value can be used as a key, including lists, maps, and sets. Since a class name is a string, it can be used as a key:
 
     $[DemoPopulation] = 300
 

@@ -7,20 +7,6 @@ const List = immutable.List;
 const Map = immutable.Map;
 const Set = immutable.Set;
 
-// Returns the path list of the object with the given name.
-function makePath(name) {
-  var m = name.match(/[A-Z][^A-Z]*/g);
-  if (!m) m = [];
-  return List(
-    m.map(function(s) {
-      return s.toLowerCase();
-    })
-  );
-}
-
-// expression for the Global object
-const Global = Map({ load: makePath("Global") });
-
 // method names of unary operators
 const UNARY = { "!": "lnot", "-": "neg", "~": "not" };
 // method names of binary operators
@@ -108,8 +94,8 @@ function makeValue(n) {
     return parseFloat(n[1]);
   } else if (t == "const_expr") {
     return CONST[n[1]];
-  } else if (t == "path_expr") {
-    return makePath(n[1]);
+  } else if (t == "name_expr") {
+    return n[1];
   } else if (t == "str_expr") {
     return JSON.parse(n[1]);
   } else if (t == "list_expr") {
@@ -206,8 +192,8 @@ function makeExpr(n, p) {
     return Map({ val: CONST[n[1]] });
   } else if (t == "str_expr") {
     return Map({ val: JSON.parse(n[1]) });
-  } else if (t == "path_expr") {
-    return Map({ val: makePath(n[1]) });
+  } else if (t == "name_expr") {
+    return Map({ val: n[1] });
   } else if (t == "func_expr") {
     return Map({ func: n[2] });
   } else if (t == "param_expr") {

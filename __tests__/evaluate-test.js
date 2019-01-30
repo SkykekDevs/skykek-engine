@@ -15,150 +15,152 @@ const evaluate_ = require("../src/evaluate.js");
 const evaluate = evaluate_.evaluate;
 
 describe("evaluate", function() {
-  const ev = function(line, tree) {
-    const expr = compileExpr(["c"], line);
-    return evaluate(expr, tree);
+  const ev = function(line, classes) {
+    const expr = compileExpr("", line);
+    return evaluate(expr, classes);
   };
   it('throws "no matching rule found" on call with bad method name', function() {
-    const tree = Map();
+    const classes = Map();
     expect(function() {
-      ev("(123).hey()", tree);
+      ev("(123).hey()", classes);
     }).toThrow("no matching rule found");
   });
   it('throws "no matching rule found" on call with bad number of arguments', function() {
-    const obj = compileObject(["c"], "$.m(x) = 3");
-    const tree = Map.of(List(["c"]), obj);
+    const obj = compileObject("", "C", "$.m(x) = 3");
+    const classes = Map.of("C", obj);
     expect(function() {
-      ev("C#.m()", tree);
+      ev("C#.m()", classes);
     }).toThrow("no matching rule found");
   });
   it("evaluates calls", function() {
-    const obj = compileObject(["c"], "$.m() = 3");
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m()", tree)).toEqual(3);
+    const obj = compileObject("", "C", "$.m() = 3");
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m()", classes)).toEqual(3);
   });
   it("evaluates calls defined at run-time", function() {
     const obj = compileObject(
-      ["c"],
+      "",
+      "C",
       '$.m() = {"n": {1: {undefined: {"val": 4}}}}.n()'
     );
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m()", tree)).toEqual(4);
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m()", classes)).toEqual(4);
   });
   it("built-in map methods have priority over normal methods", function() {
     const obj = compileObject(
-      ["c"],
+      "",
+      "C",
       '$.m() = {"x": 4, "get": {2: {"x": {"val": 5}}}}.get("x")'
     );
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m()", tree)).toEqual(4);
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m()", classes)).toEqual(4);
   });
   it("objects are maps", function() {
-    const obj = compileObject(["c"], '$["p1"] = 11\n$["p2"] = 22');
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.size()", tree)).toEqual(2);
-    expect(ev('C#.get("p1")', tree)).toEqual(11);
+    const obj = compileObject("", "C", '$["p1"] = 11\n$["p2"] = 22');
+    const classes = Map.of("C", obj);
+    expect(ev("C#.size()", classes)).toEqual(2);
+    expect(ev('C#.get("p1")', classes)).toEqual(11);
   });
   it("allocates load expression", function() {
     const obj = Map({ prop: 123 });
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#", tree);
+    const classes = Map.of("C", obj);
+    const v = ev("C#", classes);
     expect(v).toEqual(obj);
   });
   it("allocates constructor expression", function() {
-    const obj = compileObject(["c"], "$.init(a) = a + 1");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C(3)", tree);
+    const obj = compileObject("", "C", "$.init(a) = a + 1");
+    const classes = Map.of("C", obj);
+    const v = ev("C(3)", classes);
     expect(v).toEqual(4);
   });
   it("allocates number expression", function() {
-    const obj = compileObject(["c"], "$.m() = 6");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = 6");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(6);
   });
   it("allocates string expression", function() {
-    const obj = compileObject(["c"], '$.m() = "abc"');
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", '$.m() = "abc"');
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual("abc");
   });
   it("allocates boolean expression", function() {
-    const obj = compileObject(["c"], "$.m() = true");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = true");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(true);
   });
-  it("allocates path expression", function() {
-    const obj = compileObject(["c"], "$.m() = SomeClass");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
-    expect(v).toEqual(List(["some", "class"]));
+  it("allocates name expression", function() {
+    const obj = compileObject("", "C", "$.m() = SomeClass");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
+    expect(v).toEqual("SomeClass");
   });
   it("allocates func expression", function() {
-    const obj = compileObject(["c"], "$.m(x) = #!/floor");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m(3.9)", tree);
+    const obj = compileObject("", "C", "$.m(x) = #!/floor");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m(3.9)", classes);
     expect(v).toEqual(3.0);
   });
   it("allocates param expression", function() {
-    const obj = compileObject(["c"], "$.m(a, b, c) = b");
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m(3, 4, 5)", tree)).toEqual(4);
+    const obj = compileObject("", "C", "$.m(a, b, c) = b");
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m(3, 4, 5)", classes)).toEqual(4);
   });
   it("allocates $ expression", function() {
-    const obj = compileObject(["c"], "$.m(a, b, c) = $");
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m(3, 4, 5)", tree)).toEqual(obj);
+    const obj = compileObject("", "C", "$.m(a, b, c) = $");
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m(3, 4, 5)", classes)).toEqual(obj);
   });
   it("allocates list", function() {
-    const obj = compileObject(["c"], "$.m() = [3, 4, 5, 6]");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = [3, 4, 5, 6]");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(List.of(3, 4, 5, 6));
   });
   it("allocates map", function() {
-    const obj = compileObject(["c"], "$.m() = {3: 4, 5: 6}");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = {3: 4, 5: 6}");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(Map.of(3, 4, 5, 6));
   });
   it("allocates set", function() {
-    const obj = compileObject(["c"], "$.m() = #{3, 4, 5, 6}");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = #{3, 4, 5, 6}");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(Set.of(3, 4, 5, 6));
   });
   it("allocates call", function() {
-    const obj = compileObject(["c"], "$.m() = $.n()\n$.n() = 3");
-    const tree = Map.of(List(["c"]), obj);
-    expect(ev("C#.m()", tree)).toEqual(3);
+    const obj = compileObject("", "C", "$.m() = $.n()\n$.n() = 3");
+    const classes = Map.of("C", obj);
+    expect(ev("C#.m()", classes)).toEqual(3);
   });
   it("allocates val child of call", function() {
-    const obj = compileObject(["c"], "$.m() = [3]");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = [3]");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(List.of(3));
   });
   it("allocates param child of call", function() {
-    const obj = compileObject(["c"], "$.m(b) = [b]");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m(3)", tree);
+    const obj = compileObject("", "C", "$.m(b) = [b]");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m(3)", classes);
     expect(v).toEqual(List.of(3));
   });
   it("allocates call child of call", function() {
-    const obj = compileObject(["c"], "$.m() = [$.n()]\n$.n() = 3");
-    const tree = Map.of(List(["c"]), obj);
-    const v = ev("C#.m()", tree);
+    const obj = compileObject("", "C", "$.m() = [$.n()]\n$.n() = 3");
+    const classes = Map.of("C", obj);
+    const v = ev("C#.m()", classes);
     expect(v).toEqual(List.of(3));
   });
 });
 
 describe("allocate", function() {
   const ev = function(line) {
-    const expr = compileExpr(["d"], line);
-    const tree = Map.of(List(["c"]), Map({ p: 123 }));
-    return evaluate(expr, tree);
+    const expr = compileExpr("", line);
+    const classes = Map.of("C", Map({ p: 123 }));
+    return evaluate(expr, classes);
   };
   it("supports call expressions with wrongly-typed method name", function() {
     const args = '[{"val": {"p": 4}}, {"val": "p"}]';
@@ -233,7 +235,7 @@ describe("allocate", function() {
 
 describe("number", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -401,7 +403,7 @@ describe("number", function() {
 
 describe("boolean", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -455,7 +457,7 @@ describe("boolean", function() {
 
 describe("string", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -692,7 +694,7 @@ describe("string", function() {
 
 describe("list", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -891,7 +893,7 @@ describe("list", function() {
 
 describe("map", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -962,7 +964,7 @@ describe("map", function() {
 
 describe("set", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -1067,7 +1069,7 @@ describe("set", function() {
 
 describe("undefined", function() {
   const ev = function(line) {
-    const expr = compileExpr(["r"], line);
+    const expr = compileExpr("", line);
     return evaluate(expr, Map({}));
   };
   it("can be constructed", function() {
@@ -1120,11 +1122,10 @@ describe("functions", function() {
       "$.sqrt(x) = #!/sqrt",
       "$.tan(x) = #!/tan"
     ].join("\n");
-    const obj = compileObject(["f"], source);
-    const path = List(["f"]);
-    const tree = Map.of(path, obj);
-    const expr = compileExpr(["m"], line);
-    return evaluate(expr, tree);
+    const obj = compileObject("", "F", source);
+    const classes = Map.of("F", obj);
+    const expr = compileExpr("", line);
+    return evaluate(expr, classes);
   };
   it("executes #!/abs", function() {
     expect(ev("F#.abs(-2)")).toEqual(2);

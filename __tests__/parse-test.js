@@ -16,10 +16,10 @@ describe("parseDecl()", function() {
   const b = ["param_expr", "b"];
   const x = ["unmatched_param", "x"];
   const y = ["unmatched_param", "y"];
-  const A = ["path_expr", "A"];
-  const B = ["path_expr", "B"];
-  const C = ["path_expr", "C"];
-  const D = ["path_expr", "D"];
+  const A = ["name_expr", "A"];
+  const B = ["name_expr", "B"];
+  const C = ["name_expr", "C"];
+  const D = ["name_expr", "D"];
 
   it("ignores comments", function() {
     const v = parse("$.m() = a  // a comment");
@@ -299,7 +299,7 @@ describe("parseExpr()", function() {
   });
   it("parses a path expression", function() {
     const v = parse("A");
-    const ev = ["path_expr", "A"];
+    const ev = ["name_expr", "A"];
     expect(v).toEqual(ev);
   });
   it("parses a function expression", function() {
