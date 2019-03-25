@@ -336,7 +336,7 @@
     $["foo"] = 118
     $["bar"] = true
 
- then the expression `C#` is equivalent to the expression `{"foo": 118, "bar": true}`.
+ then the expression `C#` evaluates to `{"foo": 118, "bar": true}`.
 
  Both expressions in a property declaration must be values (i.e. fully-evaluated expressions). Any value can be used as a key, including lists, maps, and sets. Since a class name is a string, it can be used as a key:
 
