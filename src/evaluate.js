@@ -1165,8 +1165,6 @@ function Call(mName, args, caller, index) {
   this.index = index;
 }
 
-const EMPTY_OBJECT = Map({});
-
 // Evaluates an expression using the given classes.
 function evaluate(expr, classes) {
   var stack = [new Call("<root-call>", [undefined], -1, 0)];

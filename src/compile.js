@@ -4,6 +4,7 @@
 
 const immutable = require("../src/immutable2.js");
 const List = immutable.List;
+const Map = immutable.Map;
 
 const scan = require("./scan.js");
 const Scanner = scan.Scanner;
@@ -58,3 +59,4 @@ function compileExpr(namespace, line) {
 
 exports.compileObject = compileObject;
 exports.compileExpr = compileExpr;
+exports.EMPTY_MAP = Map({});
