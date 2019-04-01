@@ -27,8 +27,7 @@ const makeExpr = make.makeExpr;
 
 // Compiles an object from its source code.
 function compileObject(namespace, localname, source) {
-  source = source.replace(/([[{(,])[ \t]*\n/g, "$1"); // line continuation
-  const lines = source.split("\n");
+  const lines = source.match(/(?:\$.*\n(?: .*\n)*[)\]}].*\n?)|.*\n?/g); // line continuation
   const objLines = lines.filter(function(line) {
     return line.startsWith("$");
   });

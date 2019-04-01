@@ -33,14 +33,14 @@ describe("compileObject", function() {
       compileObject("A", "B", '$.a() = "a"\n$.b() = "\\z"\n$.c() = "c"');
     } catch (err) {
       expect(err.name).toEqual("AB");
-      expect(err.line).toEqual('$.b() = "\\z"');
+      expect(err.line).toEqual('$.b() = "\\z"\n');
     }
   });
   it("line continuation", function() {
     const v = compileObject(
       "A",
       "B",
-      '$["a"] = [\n3,   	\n4,\n5,\n]\n$["b"] = {\n"x": 3,\n"y": 4,\n}\n'
+      '$["a"] = [\n 3,\n 4,\n 5\n]\n$["b"] = {\n "x": 3,\n "y": 4\n}\n'
     );
     const obj = Map.of("a", List([3, 4, 5]), "b", Map({ x: 3, y: 4 }));
     expect(v).toEqual(obj);
