@@ -233,7 +233,7 @@
 
  _constructor_ := _chain_ `(` [ _args_ ] `)`
 
- A _constructor_ expression loads the object of the class with the given name, and then calls its `Init` method. The arguments in parentheses are given to `Init`. For example, the expression `Point(x, y)` is equivalent to `Point.Load().Init(x, y)`.
+ A _constructor_ expression loads the object of the class with the given name, and then calls its `New` method. The arguments in parentheses are given to `New`. For example, the expression `Point(x, y)` is equivalent to `Point.Load().New(x, y)`.
 
 
 ### Calls
@@ -413,11 +413,11 @@
 
  Notice how the number of parameters varies during the computation.
 
-### The `Init` method
+### The `New` method
 
- A constructor enables the users of a class to make a range of different objects. Implementing a constructor in your class means implementing an `Init` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `Init` method might look like this:
+ A constructor enables the users of a class to make a range of different objects. Implementing a constructor in your class means implementing an `New` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `New` method might look like this:
 
-    $.Init(x, y) = $.Set(GeomX, x).Set(GeomY, y)
+    $.New(x, y) = $.Set(GeomX, x).Set(GeomY, y)
 
  A user of the class could then easily create a new point with a constructor expression like `Point(3, 4)`.
 

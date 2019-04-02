@@ -177,7 +177,7 @@ function makeExpr(n, p) {
     for (var i = 0; i < others.length; i++) {
       args.push(makeExpr(others[i], p));
     }
-    return Map({ Call: "Init", Args: List(args) });
+    return Map({ Call: "New", Args: List(args) });
   } else if (t == "call_expr") {
     var args = [makeExpr(n[1], p)];
     const others = n[5];

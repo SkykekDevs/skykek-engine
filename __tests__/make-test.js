@@ -286,7 +286,7 @@ describe("makeExpr", function() {
   it("makes a constructor_expr", function() {
     const v = make("x(y, z)");
     const p = Map({ Call: "Load", Args: List([x]) });
-    const ev = Map({ Call: "Init", Args: List([p, y, z]) });
+    const ev = Map({ Call: "New", Args: List([p, y, z]) });
     expect(v).toEqual(ev);
   });
   it("makes a call_expr", function() {

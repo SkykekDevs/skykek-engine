@@ -68,7 +68,7 @@ describe("evaluate", function() {
     expect(v).toEqual(obj);
   });
   it("allocates constructor expression", function() {
-    const obj = compileObject("", "C", "$.Init(a) = a + 1");
+    const obj = compileObject("", "C", "$.New(a) = a + 1");
     const classes = iMap.of("C", obj);
     const v = ev("C(3)", classes);
     expect(v).toEqual(4);
