@@ -9,11 +9,11 @@
 | `undefined == x` | Equality
 | `undefined != x` | Inequality
 
-## `undefined.toString()`
+## `undefined.ToString()`
 
  Returns `"undefined"`.
 
-## `undefined.type()`
+## `undefined.Type()`
 
  Returns `"undefined"`.
 

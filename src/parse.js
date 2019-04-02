@@ -40,7 +40,7 @@ function parseDecl(s) {
     "rule_decl",
     ds,
     s.tk("."),
-    s.tk("lc"),
+    s.tk("uc"),
     s.tk("("),
     parseParams(s),
     s.tk(")"),
@@ -154,7 +154,7 @@ function parseCExpr(s) {
         "call_expr",
         expr,
         s.tk("."),
-        s.tk("lc"),
+        s.tk("uc"),
         s.tk("("),
         parseArgs(s),
         s.tk(")")

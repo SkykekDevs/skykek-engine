@@ -2,151 +2,151 @@
 // evaluate.js evaluates expressions.
 
 const immutable = require("../src/immutable2.js");
-const List = immutable.List;
-const Map = immutable.Map;
-const Set = immutable.Set;
+const iList = immutable.List;
+const iMap = immutable.Map;
+const iSet = immutable.Set;
 const is = immutable.is;
 
 // built-in objects.
 const BUILTIN = {
   number: {
-    neg: {
+    Neg: {
       1: function(a) {
         return -a[0];
       }
     },
-    not: {
+    Not: {
       1: function(a) {
         return ~a[0];
       }
     },
-    mul: {
+    Mul: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] * a[1];
       }
     },
-    div: {
+    Div: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] / a[1];
       }
     },
-    rem: {
+    Rem: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] % a[1];
       }
     },
-    pow: {
+    Pow: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return Math.pow(a[0], a[1]);
       }
     },
-    lsh: {
+    Lsh: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] << a[1];
       }
     },
-    rsh: {
+    Rsh: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] >> a[1];
       }
     },
-    zrsh: {
+    Zrsh: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] >>> a[1];
       }
     },
-    and: {
+    And: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] & a[1];
       }
     },
-    add: {
+    Add: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] + a[1];
       }
     },
-    sub: {
+    Sub: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] - a[1];
       }
     },
-    or: {
+    Or: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] | a[1];
       }
     },
-    xor: {
+    Xor: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] ^ a[1];
       }
     },
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    lt: {
+    Lt: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] < a[1];
       }
     },
-    le: {
+    Le: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] <= a[1];
       }
     },
-    gt: {
+    Gt: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] > a[1];
       }
     },
-    ge: {
+    Ge: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0] >= a[1];
       }
     },
-    isFinite: {
+    IsFinite: {
       1: function(a) {
         return Number.isFinite(a[0]);
       }
     },
-    isInteger: {
+    IsInteger: {
       1: function(a) {
         return Number.isInteger(a[0]);
       }
     },
-    isNaN: {
+    IsNaN: {
       1: function(a) {
         return Number.isNaN(a[0]);
       }
     },
-    isSafeInteger: {
+    IsSafeInteger: {
       1: function(a) {
         return Number.isSafeInteger(a[0]);
       }
     },
-    toExponential: {
+    ToExponential: {
       1: function(a) {
         return a[0].toExponential();
       },
@@ -156,7 +156,7 @@ const BUILTIN = {
         return a[0].toExponential(a[1]);
       }
     },
-    toFixed: {
+    ToFixed: {
       1: function(a) {
         return a[0].toFixed();
       },
@@ -166,7 +166,7 @@ const BUILTIN = {
         return a[0].toFixed(a[1]);
       }
     },
-    toPrecision: {
+    ToPrecision: {
       1: function(a) {
         return a[0].toPrecision();
       },
@@ -176,12 +176,12 @@ const BUILTIN = {
         return a[0].toPrecision(a[1]);
       }
     },
-    toBoolean: {
+    ToBoolean: {
       1: function(a) {
         return Boolean(a[0]);
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return a[0].toString();
       },
@@ -191,110 +191,110 @@ const BUILTIN = {
         return a[0].toString(a[1]);
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "number";
       }
     }
   },
   boolean: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    land: {
+    Land: {
       2: function(a) {
         if (typeof a[1] != "boolean") return undefined;
         return a[0] && a[1];
       }
     },
-    lor: {
+    Lor: {
       2: function(a) {
         if (typeof a[1] != "boolean") return undefined;
         return a[0] || a[1];
       }
     },
-    lnot: {
+    Lnot: {
       1: function(a) {
         return !a[0];
       }
     },
-    toNumber: {
+    ToNumber: {
       1: function(a) {
         return Number(a[0]);
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return a[0].toString();
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "boolean";
       }
     }
   },
   string: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    lt: {
+    Lt: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0] < a[1];
       }
     },
-    le: {
+    Le: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0] <= a[1];
       }
     },
-    gt: {
+    Gt: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0] > a[1];
       }
     },
-    ge: {
+    Ge: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0] >= a[1];
       }
     },
-    get: {
+    Get: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].charAt(a[1]);
       }
     },
-    charCodeAt: {
+    CharCodeAt: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].charCodeAt(a[1]);
       }
     },
-    concat: {
+    Concat: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].concat(a[1]);
       }
     },
-    endsWith: {
+    EndsWith: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].endsWith(a[1]);
@@ -305,7 +305,7 @@ const BUILTIN = {
         return a[0].endsWith(a[1], a[2]);
       }
     },
-    includes: {
+    Includes: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].includes(a[1]);
@@ -316,7 +316,7 @@ const BUILTIN = {
         return a[0].includes(a[1], a[2]);
       }
     },
-    indexOf: {
+    IndexOf: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].indexOf(a[1]);
@@ -327,7 +327,7 @@ const BUILTIN = {
         return a[0].indexOf(a[1], a[2]);
       }
     },
-    lastIndexOf: {
+    LastIndexOf: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].lastIndexOf(a[1]);
@@ -338,12 +338,12 @@ const BUILTIN = {
         return a[0].lastIndexOf(a[1], a[2]);
       }
     },
-    length: {
+    Length: {
       1: function(a) {
         return a[0].length;
       }
     },
-    match: {
+    Match: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         var r = null;
@@ -352,7 +352,7 @@ const BUILTIN = {
         } catch (e) {
           return undefined;
         }
-        return List(a[0].match(r));
+        return iList(a[0].match(r));
       },
       3: function(a) {
         if (typeof a[1] != "string") return undefined;
@@ -363,10 +363,10 @@ const BUILTIN = {
         } catch (e) {
           return undefined;
         }
-        return List(a[0].match(r));
+        return iList(a[0].match(r));
       }
     },
-    repeat: {
+    Repeat: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         try {
@@ -376,7 +376,7 @@ const BUILTIN = {
         }
       }
     },
-    replace: {
+    Replace: {
       3: function(a) {
         if (typeof a[1] != "string") return undefined;
         if (typeof a[2] != "string") return undefined;
@@ -401,7 +401,7 @@ const BUILTIN = {
         return a[0].replace(r, a[2]);
       }
     },
-    search: {
+    Search: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         var r = null;
@@ -424,7 +424,7 @@ const BUILTIN = {
         return a[0].search(r);
       }
     },
-    slice: {
+    Slice: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].slice(a[1]);
@@ -435,21 +435,21 @@ const BUILTIN = {
         return a[0].slice(a[1], a[2]);
       }
     },
-    split: {
+    Split: {
       1: function(a) {
-        return List(a[0].split());
+        return iList(a[0].split());
       },
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
-        return List(a[0].split(a[1]));
+        return iList(a[0].split(a[1]));
       },
       3: function(a) {
         if (typeof a[1] != "string") return undefined;
         if (typeof a[2] != "number") return undefined;
-        return List(a[0].split(a[1], a[2]));
+        return iList(a[0].split(a[1], a[2]));
       }
     },
-    startsWith: {
+    StartsWith: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         return a[0].startsWith(a[1]);
@@ -460,7 +460,7 @@ const BUILTIN = {
         return a[0].startsWith(a[1], a[2]);
       }
     },
-    substr: {
+    Substr: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].substr(a[1]);
@@ -471,7 +471,7 @@ const BUILTIN = {
         return a[0].substr(a[1], a[2]);
       }
     },
-    substring: {
+    Substring: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].substring(a[1]);
@@ -482,7 +482,7 @@ const BUILTIN = {
         return a[0].substring(a[1], a[2]);
       }
     },
-    test: {
+    Test: {
       2: function(a) {
         if (typeof a[1] != "string") return undefined;
         var r = null;
@@ -505,98 +505,98 @@ const BUILTIN = {
         return r.test(a[0]);
       }
     },
-    toLowerCase: {
+    ToLowerCase: {
       1: function(a) {
         return a[0].toLowerCase();
       }
     },
-    toUpperCase: {
+    ToUpperCase: {
       1: function(a) {
         return a[0].toUpperCase();
       }
     },
-    trim: {
+    Trim: {
       1: function(a) {
         return a[0].trim();
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return JSON.stringify(a[0]);
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "string";
       }
     }
   },
   list: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    size: {
+    Size: {
       1: function(a) {
         return a[0].size;
       }
     },
-    set: {
+    Set: {
       3: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].set(a[1], a[2]);
       }
     },
-    delete: {
+    Delete: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].delete(a[1]);
       }
     },
-    insert: {
+    Insert: {
       3: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].insert(a[1], a[2]);
       }
     },
-    clear: {
+    Clear: {
       1: function(a) {
         return a[0].clear();
       }
     },
-    push: {
+    Push: {
       2: function(a) {
         return a[0].push(a[1]);
       }
     },
-    pop: {
+    Pop: {
       1: function(a) {
         return a[0].pop();
       }
     },
-    unshift: {
+    Unshift: {
       2: function(a) {
         return a[0].unshift(a[1]);
       }
     },
-    shift: {
+    Shift: {
       1: function(a) {
         return a[0].shift();
       }
     },
-    setSize: {
+    SetSize: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].setSize(a[1]);
       }
     },
-    get: {
+    Get: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].get(a[1]);
@@ -606,43 +606,43 @@ const BUILTIN = {
         return a[0].get(a[1], a[2]);
       }
     },
-    has: {
+    Has: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].has(a[1]);
       }
     },
-    includes: {
+    Includes: {
       2: function(a) {
         return a[0].includes(a[1]);
       }
     },
-    first: {
+    First: {
       1: function(a) {
         return a[0].first();
       }
     },
-    last: {
+    Last: {
       1: function(a) {
         return a[0].last();
       }
     },
-    keys: {
+    Keys: {
       1: function(a) {
         return a[0].keySeq().toList();
       }
     },
-    reverse: {
+    Reverse: {
       1: function(a) {
         return a[0].reverse();
       }
     },
-    sort: {
+    Sort: {
       1: function(a) {
         return a[0].sort();
       }
     },
-    slice: {
+    Slice: {
       1: function(a) {
         return a[0].slice();
       },
@@ -656,57 +656,57 @@ const BUILTIN = {
         return a[0].slice(a[1], a[2]);
       }
     },
-    rest: {
+    Rest: {
       1: function(a) {
         return a[0].rest();
       }
     },
-    butLast: {
+    ButLast: {
       1: function(a) {
         return a[0].butLast();
       }
     },
-    skip: {
+    Skip: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].skip(a[1]);
       }
     },
-    skipLast: {
+    SkipLast: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].skipLast(a[1]);
       }
     },
-    take: {
+    Take: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].take(a[1]);
       }
     },
-    takeLast: {
+    TakeLast: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].takeLast(a[1]);
       }
     },
-    concat: {
+    Concat: {
       2: function(a) {
-        if (!List.isList(a[1])) return undefined;
+        if (!iList.isList(a[1])) return undefined;
         return a[0].concat(a[1]);
       }
     },
-    flatten: {
+    Flatten: {
       1: function(a) {
         return a[0].flatten();
       }
     },
-    interpose: {
+    Interpose: {
       2: function(a) {
         return a[0].interpose(a[1]);
       }
     },
-    splice: {
+    Splice: {
       2: function(a) {
         if (typeof a[1] != "number") return undefined;
         return a[0].splice(a[1]);
@@ -717,7 +717,7 @@ const BUILTIN = {
         return a[0].splice(a[1], a[2]);
       }
     },
-    join: {
+    Join: {
       1: function(a) {
         return a[0].join();
       },
@@ -725,94 +725,94 @@ const BUILTIN = {
         return a[0].join(a[1]);
       }
     },
-    isEmpty: {
+    IsEmpty: {
       1: function(a) {
         return a[0].isEmpty();
       }
     },
-    keyOf: {
+    KeyOf: {
       2: function(a) {
         return a[0].keyOf(a[1]);
       }
     },
-    lastKeyOf: {
+    LastKeyOf: {
       2: function(a) {
         return a[0].lastKeyOf(a[1]);
       }
     },
-    max: {
+    Max: {
       1: function(a) {
         return a[0].max();
       }
     },
-    min: {
+    Min: {
       1: function(a) {
         return a[0].min();
       }
     },
-    indexOf: {
+    IndexOf: {
       2: function(a) {
         return a[0].indexOf(a[1]);
       }
     },
-    lastIndexOf: {
+    LastIndexOf: {
       2: function(a) {
         return a[0].lastIndexOf(a[1]);
       }
     },
-    toMap: {
+    ToMap: {
       1: function(a) {
         return a[0].toMap();
       }
     },
-    toSet: {
+    ToSet: {
       1: function(a) {
         return a[0].toSet();
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return a[0].toString();
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "list";
       }
     }
   },
   map: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    size: {
+    Size: {
       1: function(a) {
         return a[0].size;
       }
     },
-    set: {
+    Set: {
       3: function(a) {
         return a[0].set(a[1], a[2]);
       }
     },
-    delete: {
+    Delete: {
       2: function(a) {
         return a[0].delete(a[1]);
       }
     },
-    clear: {
+    Clear: {
       1: function(a) {
         return a[0].clear();
       }
     },
-    get: {
+    Get: {
       2: function(a) {
         return a[0].get(a[1]);
       },
@@ -820,117 +820,117 @@ const BUILTIN = {
         return a[0].get(a[1], a[2]);
       }
     },
-    has: {
+    Has: {
       2: function(a) {
         return a[0].has(a[1]);
       }
     },
-    first: {
+    First: {
       1: function(a) {
         return a[0].first();
       }
     },
-    rest: {
+    Rest: {
       1: function(a) {
         return a[0].rest();
       }
     },
-    keys: {
+    Keys: {
       1: function(a) {
         return a[0].keySeq().toList();
       }
     },
-    toList: {
+    ToList: {
       1: function(a) {
         return a[0].toList();
       }
     },
-    toSet: {
+    ToSet: {
       1: function(a) {
         return a[0].toSet();
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return a[0].toString();
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "map";
       }
     }
   },
   set: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    size: {
+    Size: {
       1: function(a) {
         return a[0].size;
       }
     },
-    add: {
+    Add: {
       2: function(a) {
         return a[0].add(a[1]);
       }
     },
-    delete: {
+    Delete: {
       2: function(a) {
         return a[0].delete(a[1]);
       }
     },
-    clear: {
+    Clear: {
       1: function(a) {
         return a[0].clear();
       }
     },
-    union: {
+    Union: {
       2: function(a) {
-        if (!Set.isSet(a[1])) return undefined;
+        if (!iSet.isSet(a[1])) return undefined;
         return a[0].union(a[1]);
       }
     },
-    intersect: {
+    Intersect: {
       2: function(a) {
-        if (!Set.isSet(a[1])) return undefined;
+        if (!iSet.isSet(a[1])) return undefined;
         return a[0].intersect(a[1]);
       }
     },
-    subtract: {
+    Subtract: {
       2: function(a) {
-        if (!Set.isSet(a[1])) return undefined;
+        if (!iSet.isSet(a[1])) return undefined;
         return a[0].subtract(a[1]);
       }
     },
-    has: {
+    Has: {
       2: function(a) {
         return a[0].has(a[1]);
       }
     },
-    first: {
+    First: {
       1: function(a) {
         return a[0].first();
       }
     },
-    rest: {
+    Rest: {
       1: function(a) {
         return a[0].rest();
       }
     },
-    flatten: {
+    Flatten: {
       1: function(a) {
         return a[0].flatten();
       }
     },
-    join: {
+    Join: {
       1: function(a) {
         return a[0].join();
       },
@@ -939,66 +939,66 @@ const BUILTIN = {
         return a[0].join(a[1]);
       }
     },
-    isEmpty: {
+    IsEmpty: {
       1: function(a) {
         return a[0].isEmpty();
       }
     },
-    max: {
+    Max: {
       1: function(a) {
         return a[0].max();
       }
     },
-    min: {
+    Min: {
       1: function(a) {
         return a[0].min();
       }
     },
-    isSubset: {
+    IsSubset: {
       2: function(a) {
-        if (!Set.isSet(a[1])) return undefined;
+        if (!iSet.isSet(a[1])) return undefined;
         return a[0].isSubset(a[1]);
       }
     },
-    isSuperset: {
+    IsSuperset: {
       2: function(a) {
-        if (!Set.isSet(a[1])) return undefined;
+        if (!iSet.isSet(a[1])) return undefined;
         return a[0].isSuperset(a[1]);
       }
     },
-    toList: {
+    ToList: {
       1: function(a) {
         return a[0].toList();
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return a[0].toString();
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "set";
       }
     }
   },
   undefined: {
-    eq: {
+    Eq: {
       2: function(a) {
         return is(a[0], a[1]);
       }
     },
-    ne: {
+    Ne: {
       2: function(a) {
         return !is(a[0], a[1]);
       }
     },
-    toString: {
+    ToString: {
       1: function(a) {
         return "undefined";
       }
     },
-    type: {
+    Type: {
       1: function(a) {
         return "undefined";
       }
@@ -1146,8 +1146,8 @@ funcs.tan = function(a) {
 function typeOfValue(v) {
   var t = typeof v;
   if (t != "object") return t; // number, string, boolean, undefined
-  if (Map.isMap(v)) return "map";
-  if (Set.isSet(v)) return "set";
+  if (iMap.isMap(v)) return "map";
+  if (iSet.isSet(v)) return "set";
   return "list";
 }
 
@@ -1199,7 +1199,7 @@ function evaluate(expr, classes) {
       }
     }
     // If this is a call to string.load, execute the call right here.
-    if (type == "string" && mName === "load") {
+    if (type == "string" && mName === "Load") {
       stack[call.caller].args[call.index] = classes.get(this_, undefined);
       continue;
     }
@@ -1220,28 +1220,28 @@ function evaluate(expr, classes) {
 // For a call expression, allocates the call onto the stack.
 // For other expressions, assigns the value to its destination.
 function alloc(classes, expr, params, stack, caller, index) {
-  if (!Map.isMap(expr)) {
+  if (!iMap.isMap(expr)) {
     stack[caller].args[index] = undefined;
     return;
-  } else if (expr.has("call")) {
-    const mName = expr.get("call");
-    if (typeof mName !== "string" || !/^[a-z_]\w*$/.test(mName)) {
+  } else if (expr.has("Call")) {
+    const mName = expr.get("Call");
+    if (typeof mName !== "string" || !/^[A-Z]\w*$/.test(mName)) {
       stack[caller].args[index] = undefined;
       return;
     }
-    const args = expr.get("args");
-    if (!List.isList(args) || args.size < 1) {
+    const args = expr.get("Args");
+    if (!iList.isList(args) || args.size < 1) {
       stack[caller].args[index] = undefined;
       return;
     }
-    stack.push(new Call(expr.get("call"), args.toArray(), caller, index));
+    stack.push(new Call(expr.get("Call"), args.toArray(), caller, index));
     const thisCall = stack.length - 1;
     for (var i = 0; i < args.size; i++) {
       alloc(classes, args.get(i), params, stack, thisCall, i);
     }
     return;
-  } else if (expr.has("param")) {
-    const i = expr.get("param");
+  } else if (expr.has("Param")) {
+    const i = expr.get("Param");
     if (Number.isInteger(i) && i >= 0 && i < params.length) {
       stack[caller].args[index] = params[i];
       return;
@@ -1249,8 +1249,8 @@ function alloc(classes, expr, params, stack, caller, index) {
       stack[caller].args[index] = undefined;
       return;
     }
-  } else if (expr.has("func")) {
-    const func = expr.get("func");
+  } else if (expr.has("Func")) {
+    const func = expr.get("Func");
     if (!funcs.hasOwnProperty(func)) {
       stack[caller].args[index] = undefined;
       return;
@@ -1259,7 +1259,7 @@ function alloc(classes, expr, params, stack, caller, index) {
     return;
   } else {
     // val, or undefined if no val
-    stack[caller].args[index] = expr.get("val");
+    stack[caller].args[index] = expr.get("Val");
     return;
   }
 }

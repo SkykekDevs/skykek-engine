@@ -8,30 +8,30 @@ const Map = immutable.Map;
 const Set = immutable.Set;
 
 // method names of unary operators
-const UNARY = { "!": "lnot", "-": "neg", "~": "not" };
+const UNARY = { "!": "Lnot", "-": "Neg", "~": "Not" };
 // method names of binary operators
 const BINARY = {
-  "||": "lor",
-  "&&": "land",
-  "==": "eq",
-  "!=": "ne",
-  "<": "lt",
-  "<=": "le",
-  ">": "gt",
-  ">=": "ge",
-  "+": "add",
-  "-": "sub",
-  "|": "or",
-  "^": "xor",
-  "*": "mul",
-  "/": "div",
-  "%": "rem",
-  "**": "pow",
-  "++": "concat",
-  "<<": "lsh",
-  ">>": "rsh",
-  ">>>": "zrsh",
-  "&": "and"
+  "||": "Lor",
+  "&&": "Land",
+  "==": "Eq",
+  "!=": "Ne",
+  "<": "Lt",
+  "<=": "Le",
+  ">": "Gt",
+  ">=": "Ge",
+  "+": "Add",
+  "-": "Sub",
+  "|": "Or",
+  "^": "Xor",
+  "*": "Mul",
+  "/": "Div",
+  "%": "Rem",
+  "**": "Pow",
+  "++": "Concat",
+  "<<": "Lsh",
+  ">>": "Rsh",
+  ">>>": "Zrsh",
+  "&": "And"
 };
 
 // the constants
@@ -143,89 +143,89 @@ function makeExpr(n, p) {
   if (t == "binary_expr") {
     if (n[2] == "in") {
       return Map({
-        call: "has",
-        args: List([makeExpr(n[3], p), makeExpr(n[1], p)])
+        Call: "Has",
+        Args: List([makeExpr(n[3], p), makeExpr(n[1], p)])
       });
     }
     return Map({
-      call: BINARY[n[2]],
-      args: List([makeExpr(n[1], p), makeExpr(n[3], p)])
+      Call: BINARY[n[2]],
+      Args: List([makeExpr(n[1], p), makeExpr(n[3], p)])
     });
   } else if (t == "unary_expr") {
     return Map({
-      call: UNARY[n[1]],
-      args: List([makeExpr(n[2], p)])
+      Call: UNARY[n[1]],
+      Args: List([makeExpr(n[2], p)])
     });
   } else if (t == "get_expr") {
     return Map({
-      call: "get",
-      args: List([makeExpr(n[1], p), makeExpr(n[3], p)])
+      Call: "Get",
+      Args: List([makeExpr(n[1], p), makeExpr(n[3], p)])
     });
   } else if (t == "load_expr") {
     return Map({
-      call: "load",
-      args: List([makeExpr(n[1], p)])
+      Call: "Load",
+      Args: List([makeExpr(n[1], p)])
     });
   } else if (t == "constructor_expr") {
     var args = [
       Map({
-        call: "load",
-        args: List([makeExpr(n[1], p)])
+        Call: "Load",
+        Args: List([makeExpr(n[1], p)])
       })
     ];
     const others = n[3];
     for (var i = 0; i < others.length; i++) {
       args.push(makeExpr(others[i], p));
     }
-    return Map({ call: "init", args: List(args) });
+    return Map({ Call: "Init", Args: List(args) });
   } else if (t == "call_expr") {
     var args = [makeExpr(n[1], p)];
     const others = n[5];
     for (var i = 0; i < others.length; i++) {
       args.push(makeExpr(others[i], p));
     }
-    return Map({ call: n[3], args: List(args) });
+    return Map({ Call: n[3], Args: List(args) });
   } else if (t == "num_expr") {
-    return Map({ val: parseFloat(n[1]) });
+    return Map({ Val: parseFloat(n[1]) });
   } else if (t == "negnum_expr") {
-    return Map({ val: parseFloat(n[1]) });
+    return Map({ Val: parseFloat(n[1]) });
   } else if (t == "const_expr") {
-    return Map({ val: CONST[n[1]] });
+    return Map({ Val: CONST[n[1]] });
   } else if (t == "str_expr") {
-    return Map({ val: JSON.parse(n[1]) });
+    return Map({ Val: JSON.parse(n[1]) });
   } else if (t == "name_expr") {
-    return Map({ val: n[1] });
+    return Map({ Val: n[1] });
   } else if (t == "func_expr") {
-    return Map({ func: n[2] });
+    return Map({ Func: n[2] });
   } else if (t == "param_expr") {
-    return Map({ param: p[n[1]] });
+    return Map({ Param: p[n[1]] });
   } else if (t == "this_expr") {
-    return Map({ param: 0 });
+    return Map({ Param: 0 });
   } else if (t == "list_expr") {
     const elemNodes = n[2];
-    var expr = Map({ val: List([]) });
+    var expr = Map({ Val: List([]) });
     for (var i = 0; i < elemNodes.length; i++) {
       const elem = elemNodes[i];
       const args = [expr, makeExpr(elem, p)];
-      expr = Map({ call: "push", args: List(args) });
+      expr = Map({ Call: "Push", Args: List(args) });
     }
     return expr;
   } else if (t == "map_expr") {
     const pairNodes = n[2];
-    var expr = Map({ val: Map({}) });
+    var expr = Map({ Val: Map({}) });
     for (var i = 0; i < pairNodes.length; i++) {
       const pair = pairNodes[i];
       const args = [expr, makeExpr(pair[1], p), makeExpr(pair[3], p)];
-      expr = Map({ call: "set", args: List(args) });
+      expr = Map({ Call: "Set", Args: List(args) });
     }
     return expr;
   } else if (t == "set_expr") {
     const elemNodes = n[2];
-    var expr = Map({ val: Set([]) });
+    var expr = Map({ Val: Set([]) });
     for (var i = 0; i < elemNodes.length; i++) {
       const elem = elemNodes[i];
       const args = [expr, makeExpr(elem, p)];
-      expr = Map({ call: "add", args: List(args) });
+      expr = Map({ Call: "Add", Args: List(args) });
     }
     return expr;
   } else {

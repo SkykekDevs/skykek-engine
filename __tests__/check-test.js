@@ -34,39 +34,39 @@ describe("checkDecl", function() {
   });
   it("checks a rule_decl", function() {
     expect(function() {
-      check("$.m() = 5");
+      check("$.M() = 5");
     }).not.toThrow();
     const args32 = range(32).map(x => "a" + x.toString());
     expect(function() {
-      check("$.m(" + args32.join(", ") + ") = 5");
+      check("$.M(" + args32.join(", ") + ") = 5");
     }).toThrow("too many parameters");
     const args31 = range(31).map(x => "a" + x.toString());
     expect(function() {
-      check("$.m(" + args31.join(", ") + ") = 5");
+      check("$.M(" + args31.join(", ") + ") = 5");
     }).not.toThrow();
     expect(function() {
-      check("$.m(a: 3, b) = 5");
+      check("$.M(a: 3, b) = 5");
     }).toThrow("a value can be required only for the last parameter");
     expect(function() {
-      check("$.m(a, b: 3) = 5");
+      check("$.M(a, b: 3) = 5");
     }).not.toThrow();
     expect(function() {
-      check("$.m(a, b, a) = 5");
+      check("$.M(a, b, a) = 5");
     }).toThrow("parameter name a is used twice");
     expect(function() {
-      check("$.m(a, b, c) = 5");
+      check("$.M(a, b, c) = 5");
     }).not.toThrow();
     expect(function() {
-      check("$.m(a: $.n()) = 5");
+      check("$.M(a: $.N()) = 5");
     }).toThrow("expected a value");
     expect(function() {
-      check("$.m(a: 3) = 5");
+      check("$.M(a: 3) = 5");
     }).not.toThrow();
     expect(function() {
-      check("$.m(a) = b");
+      check("$.M(a) = b");
     }).toThrow("undefined parameter b");
     expect(function() {
-      check("$.m(a) = a");
+      check("$.M(a) = a");
     }).not.toThrow();
   });
 });
@@ -103,7 +103,7 @@ describe("checkValue", function() {
   });
   it("checks a call_expr as a value", function() {
     expect(function() {
-      check("$[0] = A.m()");
+      check("$[0] = A.M()");
     }).toThrow("expected a value");
   });
   it("checks a func_expr as a value", function() {
@@ -154,7 +154,7 @@ describe("checkValue", function() {
   });
   it("checks a list_expr as a value", function() {
     expect(function() {
-      check("$[0] = [$.m()]");
+      check("$[0] = [$.M()]");
     }).toThrow("expected a value");
     expect(function() {
       check("$[0] = [3]");
@@ -162,10 +162,10 @@ describe("checkValue", function() {
   });
   it("checks a map_expr as a value", function() {
     expect(function() {
-      check("$[0] = {3: $.m()}");
+      check("$[0] = {3: $.M()}");
     }).toThrow("expected a value");
     expect(function() {
-      check("$[0] = {$.m(): 33}");
+      check("$[0] = {$.M(): 33}");
     }).toThrow("expected a value");
     expect(function() {
       check("$[0] = {3: 33}");
@@ -173,7 +173,7 @@ describe("checkValue", function() {
   });
   it("checks a set_expr as a value", function() {
     expect(function() {
-      check("$[0] = #{$.m()}");
+      check("$[0] = #{$.M()}");
     }).toThrow("expected a value");
     expect(function() {
       check("$[0] = #{3}");
@@ -245,21 +245,21 @@ describe("checkExpr", function() {
   });
   it("checks a call_expr", function() {
     expect(function() {
-      check("a.m()");
+      check("a.M()");
     }).toThrow("undefined parameter a");
     const expr32 = range(32).map(x => x.toString());
     expect(function() {
-      check("A.m(" + expr32.join(", ") + ")");
+      check("A.M(" + expr32.join(", ") + ")");
     }).toThrow("too many arguments");
     const expr31 = range(31).map(x => x.toString());
     expect(function() {
-      check("A.m(" + expr31.join(", ") + ")");
+      check("A.M(" + expr31.join(", ") + ")");
     }).not.toThrow();
     expect(function() {
-      check("A.m(4, a)");
+      check("A.M(4, a)");
     }).toThrow("undefined parameter a");
     expect(function() {
-      check("A.m(4, 5)");
+      check("A.M(4, 5)");
     }).not.toThrow();
   });
   it("checks a num_expr", function() {

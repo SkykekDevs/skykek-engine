@@ -11,14 +11,15 @@
 
  A _lowercase_ name is a name whose first character is a lowercase letter or an underscore.
 
-    someMethodName
+    someParameter
     i
-    infoAboutMe
     _a
 
  An _uppercase_ name is a name whose first character is an uppercase letter.
 
-    SomeClassName
+    SomeClass
+    SomeMethod
+    THIS
 
 
 ### Keywords
@@ -37,7 +38,7 @@
 
  Comments serve to document lines of code. A comment starts with the character sequence `//` and stops at the end of the line.
 
-    $.status() = "alive" // Rumors of my demise have been greatly exaggerated.
+    $.Status() = "fooled" // can't get fooled again
 
 
 ## Values and expressions
@@ -57,13 +58,13 @@
     [3, 4, 5]
     {"x": 3, "y": 4}
     #{3, 4, 5}
-    {"odd": [1, 3, 5], "even": [2, 4, 6]}
+    {Odd: [1, 3, 5], Even: [2, 4, 6]}
     BioFemale
     undefined
 
  Here are examples of expressions that are not values:
 
-    "wow".toUpperCase()
+    "wow".ToUpperCase()
     !true
     2 + 3
     [3, 4, 20 - 15]
@@ -158,7 +159,7 @@
 
     []
     [1, 1, 2, 3, 5]
-    ["a", "b", "C".toLowerCase()]
+    ["a", "b", "C".ToLowerCase()]
     [2, {"a": 4}, [4, 5, 6]]
 
 
@@ -176,7 +177,7 @@
 
     {}
     {"x": 3, "y": 4}
-    {"a": 1, "b": 2, "C".toLowerCase(): 10 - 7}
+    {"a": 1, "b": 2, "C".ToLowerCase(): 10 - 7}
     {2: "a", {"a": 4}: "b", [4, 5, 6]: "c"}
 
 
@@ -192,7 +193,7 @@
 
     #{}
     #{5, 7, 11, 13}
-    #{"a", "b", "C".toLowerCase()}
+    #{"a", "b", "C".ToLowerCase()}
     #{2, {"a": 4}, [4, 5, 6]}
 
 
@@ -207,7 +208,7 @@
 
  You can refer to a parameter from the left-hand side of the rule. For example, the following rule returns parameter `b`:
 
-    $.m(a, b, c) = b
+    $.M(a, b, c) = b
 
  The `$` parameter is the receiver, i.e. the object whose method was called. This parameter is sometimes called `this` or `self` in other programming languages.
 
@@ -225,34 +226,34 @@
 
  _load_ := _chain_ `#`
 
- A _load_ expression loads the object of the class with the given name. It's a shorthand for a call the `load` method of the string. For example, `PolCountry#` is equivalent to `PolCountry.load()` and to `"PolCountry".load()`.
+ A _load_ expression loads the object of the class with the given name. It's a shorthand for a call the `Load` method of the string. For example, `PolCountry#` is equivalent to `PolCountry.Load()`.
 
 
 ### Constructors
 
  _constructor_ := _chain_ `(` [ _args_ ] `)`
 
- A _constructor_ expression loads the object at the given path, and then calls its `init` method. The arguments in parentheses are given to `init`. For example, the expression `Point(x, y)` is equivalent to `Point#.init(x, y)`.
+ A _constructor_ expression loads the object of the class with the given name, and then calls its `Init` method. The arguments in parentheses are given to `Init`. For example, the expression `Point(x, y)` is equivalent to `Point.Load().Init(x, y)`.
 
 
 ### Calls
 
- _call_ := _chain_ `.` _lowercase_ `(` [ _args_ ] `)`
+ _call_ := _chain_ `.` _uppercase_ `(` [ _args_ ] `)`
 
  _args_ := _expr_ | _args_ `,` _expr_
 
  A _call_ expression calls the receiver's given method with the given arguments. Here are some examples of calls:
 
-    "0123456789".split()
-    {}.set("sky", "blue")
-    myList.push(5)
+    "0123456789".Split()
+    {}.Set("sky", "blue")
+    myList.Push(5)
 
 
 ### Get
 
  _get_ := _chain_ `[` _expr_ `]`
 
- A _get_ expression accesses a property of an object. It's a shorthand for a call to the `get` method of the map. For example, `a[b]` is equivalent to `a.get(b)`.
+ A _get_ expression accesses a property of an object. It's a shorthand for a call to the `Get` method of the map. For example, `a[b]` is equivalent to `a.Get(b)`.
 
 
 ### Operators
@@ -277,31 +278,31 @@
 
 | Expression | Call | Description
 | --- | --- | ---
-| !a | a.lnot() | Logical NOT
-| -a | a.neg() | Negation
-| ~a | a.not() | Bitwise NOT
-| a * b | a.mul(b) | Multiplication
-| a / b | a.div(b) | Division
-| a % b | a.rem(b) | Remainder
-| a ** b | a.pow(b) | Exponentiation
-| a ++ b | a.concat(b) | String concatenation
-| a << b | a.lsh(b) | Left shift
-| a >> b | a.rsh(b) | Sign-propagating right shift
-| a >>> b | a.zrsh(b) | Zero-fill right shift
-| a & b | a.and(b) | Bitwise AND
-| a + b | a.add(b) | Addition
-| a - b | a.sub(b) | Subtraction
-| a \| b | a.or(b) | Bitwise OR
-| a ^ b | a.xor(b) | Bitwise XOR
-| a == b | a.eq(b) | Equality
-| a != b | a.ne(b) | Inequality
-| a < b | a.lt(b) | Less than
-| a <= b | a.le(b) | Less than or equal
-| a > b | a.gt(b) | Greater than
-| a >= b | a.ge(b) | Greater than or equal
-| a in b | b.has(a) | Membership
-| a && b | a.land(b) | Logical AND
-| a \|\| b | a.lor(b) | Logical OR
+| !a | a.Lnot() | Logical NOT
+| -a | a.Neg() | Negation
+| ~a | a.Not() | Bitwise NOT
+| a * b | a.Mul(b) | Multiplication
+| a / b | a.Div(b) | Division
+| a % b | a.Rem(b) | Remainder
+| a ** b | a.Pow(b) | Exponentiation
+| a ++ b | a.Concat(b) | String concatenation
+| a << b | a.Lsh(b) | Left shift
+| a >> b | a.Rsh(b) | Sign-propagating right shift
+| a >>> b | a.Zrsh(b) | Zero-fill right shift
+| a & b | a.And(b) | Bitwise AND
+| a + b | a.Add(b) | Addition
+| a - b | a.Sub(b) | Subtraction
+| a \| b | a.Or(b) | Bitwise OR
+| a ^ b | a.Xor(b) | Bitwise XOR
+| a == b | a.Eq(b) | Equality
+| a != b | a.Ne(b) | Inequality
+| a < b | a.Lt(b) | Less than
+| a <= b | a.Le(b) | Less than or equal
+| a > b | a.Gt(b) | Greater than
+| a >= b | a.Ge(b) | Greater than or equal
+| a in b | b.Has(a) | Membership
+| a && b | a.Land(b) | Logical AND
+| a \|\| b | a.Lor(b) | Logical OR
 
  Unary operators (logical NOT, negation and bitwise NOT) have a higher precedence than binary operators. Within binary operators, multiplication operators have the highest precedence, followed by addition operators, comparison operators, logical AND, and logical OR:
 
@@ -346,7 +347,7 @@
 
 ### Rule declarations
 
- _rule-decl_ := `$` `.` _lowercase_ `(` [ _params_ ] `)` `=` _expr_
+ _rule-decl_ := `$` `.` _uppercase_ `(` [ _params_ ] `)` `=` _expr_
 
  _params_ := _param_ | _params_ `,` _param_
 
@@ -358,9 +359,9 @@
 
  Take the following rule:
 
-    $.m(a, b: true) = 300
+    $.M(a, b: true) = 300
 
- It says that if the method named `m` is called on this object with 2 other parameters, and if the last parameter is equal to `true`, then we return `300`.
+ It says that if the method named `M` is called on this object with 2 other parameters, and if the last parameter is equal to `true`, then we return `300`.
 
 
 ### Methods
@@ -369,11 +370,11 @@
 
  Say, for example, that the source code of a class contains the following method with three rules:
 
-    $.color(fruit: "apple") = "red"
-    $.color(fruit: "banana") = "yellow"
-    $.color(fruit) = "green"
+    $.Color(fruit: "apple") = "red"
+    $.Color(fruit: "banana") = "yellow"
+    $.Color(fruit) = "green"
 
- The code says that if a call is made to the `color` method with 2 parameters (`$` and `fruit`) and if the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is equal to `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
+ The code says that if a call is made to the `Color` method with 2 parameters (`$` and `fruit`) and if the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is equal to `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
 
  In the map generated from the source code, this method is an entry with key `"color"` and value
 
@@ -389,34 +390,34 @@
 
 | Example | Meaning
 | --- | ---
-| `{"val": "red"}` | the value `"red"`
-| `{"param": 0}` | `$`
-| `{"param": 3}` | the parameter at index 3
-| `{"call": "m", "args": list}` | a call to the method named `m` with a list of arguments
+| `{Val: "red"}` | the value `"red"`
+| `{Param: 0}` | `$`
+| `{Param: 3}` | the parameter at index 3
+| `{Call: M, Args: list}` | a call to the method named `M` with a list of arguments
 
  As a programmer you typically don't have to worry about the internal representation of methods. After all, the interpreter takes care of compiling your source code into objects. However, it's good to remember that methods are just map entries, and therefore can be created and called at run-time:
 
-    {"agree": {2: {true: {"val": "Yes!"}, false: {"val": "No!"}}}}.agree(true)
+    {Agree: {2: {true: {Val: "Yes!"}, false: {Val: "No!"}}}}.Agree(true)
 
  The expression above evaluates to `"Yes!"`.
 
- Built-in map methods have priority over regular methods, so the latter shouldn't be named `eq`, `ne`, `size`, `set`, `delete`, `clear`, `get`, `has`, `first`, `rest`, `keys`, `toList`, `toSet`, `toString`, or `type`. Even if you do implement for example a `get` method, any call to `get` will still be interpreted as a call to the built-in `get` method.
+ Built-in map methods have priority over regular methods, so the latter shouldn't be named `Eq`, `Ne`, `Size`, `Set`, `Delete`, `Clear`, `Get`, `Has`, `First`, `Rest`, `Keys`, `ToList`, `ToSet`, `ToString`, or `Type`. Even if you do implement for example a `Get` method, any call to `Get` will still be interpreted as a call to the built-in `Get` method.
 
-### An example: `$.sum(list)` 
+### An example: `$.Sum(list)` 
 
  The method in the previous example merely associates a fruit name to a color. But even though graph rewriting is the only form of computation we have access to, we can still implement less trivial methods. The main trick in Keklang is for a method to call itself with a different pattern. Here is a method that adds the elements of a list:
 
-    $.sum(list) = $.sum(list, list.isEmpty())
-    $.sum(list, isEmpty: true) = 0
-    $.sum(list, isEmpty: false) = list.first() + $.sum(list.rest())
+    $.Sum(list) = $.Sum(list, list.isEmpty())
+    $.Sum(list, isEmpty: true) = 0
+    $.Sum(list, isEmpty: false) = list.First() + $.Sum(list.Rest())
 
  Notice how the number of parameters varies during the computation.
 
-### The `init` method
+### The `Init` method
 
- A constructor enables the users of a class to make a range of different objects. Implementing a constructor in your class means implementing an `init` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `init` method might look like this:
+ A constructor enables the users of a class to make a range of different objects. Implementing a constructor in your class means implementing an `Init` method that returns an object. If you were to write a `Point` class to represent points on a 2D plane, the `Init` method might look like this:
 
-    $.init(x, y) = $.set(GeomX, x).set(GeomY, y)
+    $.Init(x, y) = $.Set(GeomX, x).Set(GeomY, y)
 
  A user of the class could then easily create a new point with a constructor expression like `Point(3, 4)`.
 
@@ -427,9 +428,9 @@
 
  A function allows a rule to delegate its work to the interpreter for performance. For example, `#!/sqrt` computes the square root of its argument. If your `Math` class contains the rule
 
-    $.squareRoot(x) = #!/sqrt
+    $.SquareRoot(x) = #!/sqrt
 
- then the expression `Math.squareRoot(9)` will return `3`.
+ then the expression `Math.SquareRoot(9)` will return `3`.
 
  A function cannot be part of a larger expression.
 

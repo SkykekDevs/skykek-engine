@@ -27,9 +27,9 @@ describe("renameDecl()", function() {
     expect(v).toEqual(ev);
   });
   it("renames a rule_decl", function() {
-    const v = rename("$.m(a: @A) = @B");
+    const v = rename("$.@C(a: @A) = @B");
     const param = ["matched_param", "a", ":", MA];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", MB];
+    const ev = ["rule_decl", "$", ".", "MC", "(", [param], ")", "=", MB];
     expect(v).toEqual(ev);
   });
 });
@@ -68,8 +68,8 @@ describe("renameExpr()", function() {
     expect(v).toEqual(ev);
   });
   it("renames a call_expr", function() {
-    const v = rename("@A.m(@B)");
-    const ev = ["call_expr", MA, ".", "m", "(", [MB], ")"];
+    const v = rename("@A.@C(@B)");
+    const ev = ["call_expr", MA, ".", "MC", "(", [MB], ")"];
     expect(v).toEqual(ev);
   });
   it("renames a name_expr", function() {

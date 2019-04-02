@@ -2,7 +2,7 @@
 
  A map is a collection of key-value pairs.
 
- When iterating a map, for example with `first()` and `rest()`, the iteration order is undefined but stable.
+ When iterating a map, for example with `First()` and `Rest()`, the iteration order is undefined but stable.
 
 ## Operators
 
@@ -11,56 +11,56 @@
 | `s1 == s2` | Equality
 | `s1 != s2` | Inequality
 
-## `m.size()`
+## `m.Size()`
 
  Returns the number of key-value pairs in `m`.
 
-## `m.set(key, value)`
+## `m.Set(key, value)`
 
  Returns a map containing the given key-value pair.
 
-## `m.delete(key)`
+## `m.Delete(key)`
 
  Returns a map which excludes the specified `key`.
 
-## `m.clear()`
+## `m.Clear()`
 
  Returns a map containing no key-value pairs.
 
-## `m.get(key[, notSetValue])`
+## `m.Get(key[, notSetValue])`
 
  Returns the value associated with the given `key`, or `notSetValue` if `m` does not contain the key. If `notSetValue` is omitted, it defaults to `undefined`.
 
- The expression `m[key]` is equivalent to `m.get(key)`.
+ The expression `m[key]` is equivalent to `m.Get(key)`.
 
-## `m.has(key)`
+## `m.Has(key)`
 
  Returns true if the given `key` exists in `m`.
 
-## `m.first()`
+## `m.First()`
  Returns the first value in `m`.
 
-## `m.rest()`
+## `m.Rest()`
 
  Returns a map containing all key-value pairs except the first.
 
-## `m.keys()`
+## `m.Keys()`
 
  Returns a list of the keys of `m`.
 
-## `m.toList()`
+## `m.ToList()`
 
  Returns a list of the values of `m`.
 
-## `m.toSet()`
+## `m.ToSet()`
 
  Returns a set of the values of `m`.
 
-## `m.toString()`
+## `m.ToString()`
 
  Returns a string representing `m`.
 
-## `m.type()`
+## `m.Type()`
 
  Returns `"map"`.
 

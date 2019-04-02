@@ -27,43 +27,43 @@
 | `x1 > x2` |  Greater than
 | `x1 >= x2` | Greater than or equal
 
-## `x.isFinite()`
+## `x.IsFinite()`
 
  Determines whether `x` is a finite number.
 
-## `x.isInteger()`
+## `x.IsInteger()`
 
  Determines whether `x` is an integer.
 
-## `x.isNaN()`
+## `x.IsNaN()`
 
  Determines whether `x` is NaN.
 
-## `x.isSafeInteger()`
+## `x.IsSafeInteger()`
 
  Determines whether `x` is a number that is a safe integer.
 
-## `x.toExponential([fractionDigits])`
+## `x.ToExponential([fractionDigits])`
 
  Returns a string representing `x` in exponential notation. **fractionDigits** is the number of digits after the decimal point. If the argument is omitted, defaults to as many digits as necessary to specify `x`.
 
-## `x.toFixed([digits])`
+## `x.ToFixed([digits])`
 
  Formats `x` using fixed-point notation. **digits** is the number of digits to appear after the decimal point (between 0 and 20 inclusively). If the argument is omitted, defaults to 0.
 
-## `x.toPrecision([precision])`
+## `x.ToPrecision([precision])`
 
  Returns a string representing `x`. **precision** is the number of significant digits. If the argument is omitted, behaves as `toString()`.
 
-## `x.toBoolean()`
+## `x.ToBoolean()`
 
  Returns `false` if `x` is 0 or NaN. Returns `true` otherwise.
 
-## `x.toString([radix])`
+## `x.ToString([radix])`
 
  Returns a string representing `x`. **radix** is an integer between 2 and 36 specifying the base to use. If the argument is omitted, defaults to 10.
 
-## `x.type()`
+## `x.Type()`
 
  Returns `"number"`.
 

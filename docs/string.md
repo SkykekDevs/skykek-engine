@@ -73,47 +73,47 @@
      i       ignore case
      m       multiline matching
 
-## `s.get(index)`
+## `s.Get(index)`
 
  Returns the character from `s` at the specified index.
 
-## `s.charCodeAt(index)`
+## `s.CharCodeAt(index)`
 
  Returns an integer between 0 and 65535 representing the UTF-16 code unit at the specified index.
 
-## `s.concat(s2)`
+## `s.Concat(s2)`
 
  Concatenates `s` with `s2`.
 
-## `s.endsWith(searchString[, length])`
+## `s.EndsWith(searchString[, length])`
 
  Determines whether `s` ends with the characters of `searchString`. `length` overwrites the length of `s` to search in. If `length` is omitted, it defaults to the length of `s`.
 
-## `s.includes(searchString[, position])`
+## `s.Includes(searchString[, position])`
 
- Determine whether a search string may be found within `s`. `searchString` is the string to be searched for. `position` is the position within `s` to begin searching for `searchString`. If `position` is omitted, it defaults to 0.
+ Determines whether a search string may be found within `s`. `searchString` is the string to be searched for. `position` is the position within `s` to begin searching for `searchString`. If `position` is omitted, it defaults to 0.
 
-## `s.indexOf(searchValue[, fromIndex])`
+## `s.IndexOf(searchValue[, fromIndex])`
 
  Returns the index of the first occurrence of `searchValue` within `s`, starting the search at `fromIndex`. Returns -1 if the value is not found. If `fromIndex` is omitted, it defaults to 0.
 
-## `s.lastIndexOf(searchValue[, fromIndex])`
+## `s.LastIndexOf(searchValue[, fromIndex])`
 
  Returns the index of the last occurrence of `searchValue` within `s`, searching backwards from `fromIndex`. Returns -1 if the value is not found. If `fromIndex` is omitted, it defaults to Infinity.
  
-## `s.length()`
+## `s.Length()`
 
  Returns the length of `s`.
 
-## `s.match(pattern[, flags])`
+## `s.Match(pattern[, flags])`
 
  Retrieves the matches when matching `s` against a regular expression. `pattern` and `flags` are strings describing the regular expression.
 
-## `s.repeat(count)`
+## `s.Repeat(count)`
 
  Returns a string containing the specified number of copies of `s`. `count` is the number of times to repeat `s`.
 
-## `s.replace(pattern, newSubstr[, flags])`
+## `s.Replace(pattern, newSubstr[, flags])`
 
  Returns a string with the occurrences of a regular expression in `s` replaced by a new string. `newSubstr` is the string that replaces the matched substrings of `s`. `pattern` and `flags` are strings describing the regular expression.
 
@@ -126,55 +126,55 @@
 | $\` | Inserts the portion of the string that precedes the matched substring.
 | $' | Inserts the portion of the string that follows the matched substring.
 
-## `s.search(pattern[, flags])`
+## `s.Search(pattern[, flags])`
 
  Returns the index of the first match of a regular expression in `s`. Returns -1 if no match is found. `pattern` and `flags` are strings describing the regular expression.
 
-## `s.slice(beginIndex[, endIndex])`
+## `s.Slice(beginIndex[, endIndex])`
 
  Extracts a section of `s`. `beginIndex` is the zero-based index at which to start extraction. `endIndex` is the zero-based index at which to end extraction. If `endIndex` is omitted, characters are extracted to the end of `s`.
 
-## `s.split([separator[, limit]])`
+## `s.Split([separator[, limit]])`
 
  Splits `s` into a list of strings. `separator` is the string to use for separating `s`. If `separator` is omitted, the returned list contains only `s`. If `separator` is an empty string, `s` is converted into a list of characters. `limit` is an optional limit on the number of splits to be found.
 
-## `s.startsWith(searchString[, position])`
+## `s.StartsWith(searchString[, position])`
 
  Determines whether `s` begins with the characters of a specified string. `searchString` is the string to be searched for at the start of `s`. `position` is the position in `s` at which to begin searching for `searchString`. If `position` is omitted, the search starts at 0.
 
-## `s.substr(start[, length])`
+## `s.Substr(start[, length])`
 
  Returns the characters in n beginning at the specified location through the specified number of characters. If `length` is omitted, characters are included to the end of `s`.
 
-## `s.substring(indexStart[, indexEnd])`
+## `s.Substring(indexStart[, indexEnd])`
 
  Returns a subset of `s` between one index and another, or through the end of `s`. `indexStart` is the offset (between 0 and the end of `s`) into `s` of the first character to include. `indexEnd` is the offset (between 0 and the end of `s`) into `s` of the first character **not** to include. If `indexEnd` is omitted, characters are included to the end of `s`.
 
-## `s.test(pattern[, flags])`
+## `s.Test(pattern[, flags])`
 
   Returns `true` if a given regular expression matches `s`. `pattern` and `flags` are strings describing the regular expression.
 
-## `s.toLowerCase()`
+## `s.ToLowerCase()`
 
   Returns `s` converted to lower case.
 
-## `s.toUpperCase()`
+## `s.ToUpperCase()`
 
   Returns `s` converted to upper case.
 
-## `s.trim()`
+## `s.Trim()`
 
  Removes whitespace from both ends of `s`. Whitespace means the whitespace characters (space, tab, no-break space, etc.) and line terminators (LF, CR, etc.).
 
-## `s.toString()`
+## `s.ToString()`
 
  Returns a string representing `s`. For example, `"abc".toString()` is equal to `"\"abc\""`.
 
-## `s.load()`
+## `s.Load()`
 
  Returns the object of the class named `s`.
 
-## `s.type()`
+## `s.Type()`
 
  Returns `"string"`.
 

@@ -22,8 +22,8 @@ describe("parseDecl()", function() {
   const D = ["name_expr", "D"];
 
   it("ignores comments", function() {
-    const v = parse("$.m() = a  // a comment");
-    const ev = ["rule_decl", "$", ".", "m", "(", [], ")", "=", a];
+    const v = parse("$.M() = a  // a comment");
+    const ev = ["rule_decl", "$", ".", "M", "(", [], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a prop_decl", function() {
@@ -32,135 +32,135 @@ describe("parseDecl()", function() {
     expect(v).toEqual(ev);
   });
   it("parses a rule_decl with 0 params", function() {
-    const v = parse("$.m() = a");
-    const ev = ["rule_decl", "$", ".", "m", "(", [], ")", "=", a];
+    const v = parse("$.M() = a");
+    const ev = ["rule_decl", "$", ".", "M", "(", [], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a rule_decl with 1 param", function() {
-    const v = parse("$.m(x) = a");
-    const ev = ["rule_decl", "$", ".", "m", "(", [x], ")", "=", a];
+    const v = parse("$.M(x) = a");
+    const ev = ["rule_decl", "$", ".", "M", "(", [x], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a rule_decl with 2 params", function() {
-    const v = parse("$.m(x, y) = a");
-    const ev = ["rule_decl", "$", ".", "m", "(", [x, y], ")", "=", a];
+    const v = parse("$.M(x, y) = a");
+    const ev = ["rule_decl", "$", ".", "M", "(", [x, y], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("throws a syntax error on a bad token", function() {
     expect(function() {
-      parse("}.m() = a");
+      parse("}.M() = a");
     }).toThrow("syntax");
     expect(function() {
-      parse("$}m() = a");
+      parse("$}M() = a");
     }).toThrow("syntax");
     expect(function() {
       parse("$.}() = a");
     }).toThrow("syntax");
     expect(function() {
-      parse("$.m}) = a");
+      parse("$.M}) = a");
     }).toThrow("syntax");
     expect(function() {
-      parse("$.m(} = a");
+      parse("$.M(} = a");
     }).toThrow("syntax");
   });
   it("parses an unmatched param", function() {
-    const v = parse("$.m(x) = a");
+    const v = parse("$.M(x) = a");
     const param = ["unmatched_param", "x"];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a number param", function() {
-    const v = parse("$.m(x: 3) = a");
+    const v = parse("$.M(x: 3) = a");
     const expr = ["num_expr", "3"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a negative number param", function() {
-    const v = parse("$.m(x: -3) = a");
+    const v = parse("$.M(x: -3) = a");
     const expr = ["negnum_expr", "-3"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a string param", function() {
-    const v = parse('$.m(x: "abc") = a');
+    const v = parse('$.M(x: "abc") = a');
     const expr = ["str_expr", '"abc"'];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a const param", function() {
-    const v = parse("$.m(x: true) = a");
+    const v = parse("$.M(x: true) = a");
     const expr = ["const_expr", "true"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a list param with 0 elements", function() {
-    const v = parse("$.m(x: []) = a");
+    const v = parse("$.M(x: []) = a");
     const expr = ["list_expr", "[", [], "]"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a list param with 1 element", function() {
-    const v = parse("$.m(x: [A]) = a");
+    const v = parse("$.M(x: [A]) = a");
     const expr = ["list_expr", "[", [A], "]"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a list param with 2 elements", function() {
-    const v = parse("$.m(x: [A, B]) = a");
+    const v = parse("$.M(x: [A, B]) = a");
     const expr = ["list_expr", "[", [A, B], "]"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a map param with 0 pairs", function() {
-    const v = parse("$.m(x: {}) = a");
+    const v = parse("$.M(x: {}) = a");
     const expr = ["map_expr", "{", [], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a map param with 1 entry", function() {
-    const v = parse("$.m(x: {A: B}) = a");
+    const v = parse("$.M(x: {A: B}) = a");
     const pairAB = ["pair", A, ":", B];
     const expr = ["map_expr", "{", [pairAB], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a map param with 2 entries", function() {
-    const v = parse("$.m(x: {A: B, C: D}) = a");
+    const v = parse("$.M(x: {A: B, C: D}) = a");
     const pairAB = ["pair", A, ":", B];
     const pairCD = ["pair", C, ":", D];
     const expr = ["map_expr", "{", [pairAB, pairCD], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a set param with 0 members", function() {
-    const v = parse("$.m(x: #{}) = a");
+    const v = parse("$.M(x: #{}) = a");
     const expr = ["set_expr", "#{", [], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a set param with 1 members", function() {
-    const v = parse("$.m(x: #{A}) = a");
+    const v = parse("$.M(x: #{A}) = a");
     const expr = ["set_expr", "#{", [A], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
   it("parses a set param with 2 members", function() {
-    const v = parse("$.m(x: #{A, B}) = a");
+    const v = parse("$.M(x: #{A, B}) = a");
     const expr = ["set_expr", "#{", [A, B], "}"];
     const param = ["matched_param", "x", ":", expr];
-    const ev = ["rule_decl", "$", ".", "m", "(", [param], ")", "=", a];
+    const ev = ["rule_decl", "$", ".", "M", "(", [param], ")", "=", a];
     expect(v).toEqual(ev);
   });
 });
@@ -258,18 +258,18 @@ describe("parseExpr()", function() {
     expect(v3).toEqual(ev3);
   });
   it("parses a call expression", function() {
-    const v0 = parse("a.m()");
-    const ev0 = ["call_expr", a, ".", "m", "(", [], ")"];
+    const v0 = parse("a.M()");
+    const ev0 = ["call_expr", a, ".", "M", "(", [], ")"];
     expect(v0).toEqual(ev0);
-    const v1 = parse("a.m(b)");
-    const ev1 = ["call_expr", a, ".", "m", "(", [b], ")"];
+    const v1 = parse("a.M(b)");
+    const ev1 = ["call_expr", a, ".", "M", "(", [b], ")"];
     expect(v1).toEqual(ev1);
-    const v2 = parse("a.m(b, c)");
-    const ev2 = ["call_expr", a, ".", "m", "(", [b, c], ")"];
+    const v2 = parse("a.M(b, c)");
+    const ev2 = ["call_expr", a, ".", "M", "(", [b, c], ")"];
     expect(v2).toEqual(ev2);
     // chain
-    const v3 = parse("a.m()#");
-    const ev3 = ["load_expr", ["call_expr", a, ".", "m", "(", [], ")"], "#"];
+    const v3 = parse("a.M()#");
+    const ev3 = ["load_expr", ["call_expr", a, ".", "M", "(", [], ")"], "#"];
     expect(v3).toEqual(ev3);
   });
   it("parses a parenthesized expression", function() {

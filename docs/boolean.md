@@ -12,15 +12,15 @@
 | `b1 \|\| b2` | Logical OR
 | `!b` | Logical NOT
 
-## `b.toNumber()`
+## `b.ToNumber()`
 
  Returns `1` if `b` is `true`. Returns `0` if `b` is `false`.
 
-## `b.toString()`
+## `b.ToString()`
 
  Returns a string representing `b` (i.e. `"true"` or `"false"`).
 
-## `b.type()`
+## `b.Type()`
 
  Returns `"boolean"`.
 
