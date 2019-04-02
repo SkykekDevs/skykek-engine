@@ -242,12 +242,6 @@ const BUILTIN = {
     }
   },
   string: {
-    add: {
-      2: function(a) {
-        if (typeof a[1] != "string") return undefined;
-        return a[0] + a[1];
-      }
-    },
     eq: {
       2: function(a) {
         return is(a[0], a[1]);

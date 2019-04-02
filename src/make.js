@@ -27,6 +27,7 @@ const BINARY = {
   "/": "div",
   "%": "rem",
   "**": "pow",
+  "++": "concat",
   "<<": "lsh",
   ">>": "rsh",
   ">>>": "zrsh",

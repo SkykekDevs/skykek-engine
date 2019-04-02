@@ -49,6 +49,7 @@ describe("Scanner", function() {
         "<<",
         ">>",
         ">>>",
+        "++",
         "**",
         "in"
       ]) {

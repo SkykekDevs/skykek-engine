@@ -463,10 +463,6 @@ describe("string", function() {
   it("can be constructed", function() {
     expect(ev('"abc"')).toEqual("abc");
   });
-  it("implements x + y", function() {
-    expect(ev('"abc" + "def"')).toEqual("abcdef");
-    expect(ev('"abc" + []')).toEqual(undefined);
-  });
   it("implements x == y", function() {
     expect(ev('"def" == "abc"')).toEqual(false);
     expect(ev('"def" == "def"')).toEqual(true);
@@ -503,6 +499,10 @@ describe("string", function() {
     expect(ev('"def" >= "ghi"')).toEqual(false);
     expect(ev('"def" >= []')).toEqual(undefined);
   });
+  it("implements x ++ y", function() {
+    expect(ev('"abc" ++ "def"')).toEqual("abcdef");
+    expect(ev('"abc" ++ []')).toEqual(undefined);
+  });
   it("implements get(index)", function() {
     expect(ev('"abc".get(1)')).toEqual("b");
     expect(ev('"abc".get(100)')).toEqual("");
@@ -511,10 +511,6 @@ describe("string", function() {
   it("implements charCodeAt(index)", function() {
     expect(ev('"abc".charCodeAt(1)')).toEqual(98);
     expect(ev('"abc".charCodeAt([])')).toEqual(undefined);
-  });
-  it("implements concat(string)", function() {
-    expect(ev('"abc".concat("def")')).toEqual("abcdef");
-    expect(ev('"abc".concat([])')).toEqual(undefined);
   });
   it("implements endsWith(searchString)", function() {
     expect(ev('"abcdef".endsWith("def")')).toEqual(true);

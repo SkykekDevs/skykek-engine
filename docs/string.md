@@ -6,7 +6,7 @@
 
 | Expression | Description
 | --- | ---
-| `s1 + s2` |  Concatenation
+| `s1 ++ s2` | Concatenation
 | `s1 == s2` | Equality
 | `s1 != s2` | Inequality
 | `s1 < s2` |  Less than

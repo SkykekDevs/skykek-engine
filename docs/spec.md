@@ -284,6 +284,7 @@
 | a / b | a.div(b) | Division
 | a % b | a.rem(b) | Remainder
 | a ** b | a.pow(b) | Exponentiation
+| a ++ b | a.concat(b) | String concatenation
 | a << b | a.lsh(b) | Left shift
 | a >> b | a.rsh(b) | Sign-propagating right shift
 | a >>> b | a.zrsh(b) | Zero-fill right shift

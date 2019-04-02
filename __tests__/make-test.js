@@ -228,6 +228,16 @@ describe("makeExpr", function() {
     const ev = Map({ call: "rem", args: List([x, y]) });
     expect(v).toEqual(ev);
   });
+  it("makes x ** y", function() {
+    const v = make("x ** y");
+    const ev = Map({ call: "pow", args: List([x, y]) });
+    expect(v).toEqual(ev);
+  });
+  it("makes x ++ y", function() {
+    const v = make("x ++ y");
+    const ev = Map({ call: "concat", args: List([x, y]) });
+    expect(v).toEqual(ev);
+  });
   it("makes x << y", function() {
     const v = make("x << y");
     const ev = Map({ call: "lsh", args: List([x, y]) });

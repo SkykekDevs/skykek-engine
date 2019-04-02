@@ -206,7 +206,7 @@ describe("parseExpr()", function() {
     }
   });
   it("parses a level-5 binary expression", function() {
-    for (var op of ["*", "/", "%", "<<", ">>", ">>>", "&"]) {
+    for (var op of ["*", "/", "%", "**", "++", "<<", ">>", ">>>", "&"]) {
       const v = parse("!a " + op + " !b");
       const notA = ["unary_expr", "!", a];
       const notB = ["unary_expr", "!", b];
