@@ -401,7 +401,7 @@
 
  The expression above evaluates to `"Yes!"`.
 
- Built-in map methods have priority over regular methods, so the latter shouldn't be named `Eq`, `Ne`, `Size`, `Set`, `Delete`, `Clear`, `Get`, `Has`, `First`, `Rest`, `Keys`, `ToList`, `ToSet`, `ToString`, or `Type`. Even if you do implement for example a `Get` method, any call to `Get` will still be interpreted as a call to the built-in `Get` method.
+ Your methods override any built-in map methods with the same name. For example, if you implement a `Get` method in your class, you will no longer be able to call the built-in `Get` method of the map. The built-in methods for maps are `Eq`, `Ne`, `Size`, `Set`, `Delete`, `Clear`, `Get`, `Has`, `First`, `Rest`, `Keys`, `ToList`, `ToSet`, `ToString`, or `Type`.
 
 ### An example: `$.Sum(list)` 
 

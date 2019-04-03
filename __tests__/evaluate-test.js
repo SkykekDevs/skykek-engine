@@ -46,14 +46,14 @@ describe("evaluate", function() {
     const classes = iMap.of("C", obj);
     expect(ev("C#.M()", classes)).toEqual(4);
   });
-  it("built-in map methods have priority over normal methods", function() {
+  it("normal methods have priority over built-in map methods", function() {
     const obj = compileObject(
       "",
       "C",
       '$.M() = {"x": 4, Get: {2: {"x": {Val: 5}}}}.Get("x")'
     );
     const classes = iMap.of("C", obj);
-    expect(ev("C#.M()", classes)).toEqual(4);
+    expect(ev("C#.M()", classes)).toEqual(5);
   });
   it("objects are maps", function() {
     const obj = compileObject("", "C", '$["p1"] = 11\n$["p2"] = 22');

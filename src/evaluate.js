@@ -1011,8 +1011,6 @@ const BUILTIN = {
   }
 };
 
-const MAP_BUILTIN = BUILTIN["map"];
-
 // built-in functions.
 var funcs = {};
 
@@ -1185,7 +1183,7 @@ function evaluate(expr, classes) {
     var this_ = args[0];
     var type = typeOfValue(this_);
     // Try to find a user-defined rule matching this call.
-    if (type == "map" && !MAP_BUILTIN.hasOwnProperty(mName)) {
+    if (type == "map") {
       if (this_.has(mName)) {
         const bySize = this_.get(mName);
         if (bySize.has(size)) {
