@@ -79,6 +79,7 @@ function checkExpr(n, params) {
     }
   } else if (t == "call_expr") {
     checkExpr(n[1], params);
+    checkExpr(n[3], params);
     const args = n[5];
     if (1 + args.length > MAX_PARAMS) {
       throw new Error("too many arguments");

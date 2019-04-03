@@ -51,7 +51,7 @@ function renameExpr(n, ns) {
     }
   } else if (t == "call_expr") {
     renameExpr(n[1], ns);
-    n[3] = n[3].replace("@", ns);
+    renameExpr(n[3], ns);
     const args = n[5];
     for (var i = 0; i < args.length; i++) {
       renameExpr(args[i], ns);

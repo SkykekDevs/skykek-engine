@@ -258,18 +258,18 @@ describe("parseExpr()", function() {
     expect(v3).toEqual(ev3);
   });
   it("parses a call expression", function() {
-    const v0 = parse("a.M()");
-    const ev0 = ["call_expr", a, ".", "M", "(", [], ")"];
+    const v0 = parse("a.b()");
+    const ev0 = ["call_expr", a, ".", b, "(", [], ")"];
     expect(v0).toEqual(ev0);
-    const v1 = parse("a.M(b)");
-    const ev1 = ["call_expr", a, ".", "M", "(", [b], ")"];
+    const v1 = parse("a.b(c)");
+    const ev1 = ["call_expr", a, ".", b, "(", [c], ")"];
     expect(v1).toEqual(ev1);
-    const v2 = parse("a.M(b, c)");
-    const ev2 = ["call_expr", a, ".", "M", "(", [b, c], ")"];
+    const v2 = parse("a.b(c, d)");
+    const ev2 = ["call_expr", a, ".", b, "(", [c, d], ")"];
     expect(v2).toEqual(ev2);
     // chain
-    const v3 = parse("a.M()#");
-    const ev3 = ["load_expr", ["call_expr", a, ".", "M", "(", [], ")"], "#"];
+    const v3 = parse("a.b()#");
+    const ev3 = ["load_expr", ["call_expr", a, ".", b, "(", [], ")"], "#"];
     expect(v3).toEqual(ev3);
   });
   it("parses a parenthesized expression", function() {

@@ -35,26 +35,26 @@ describe("makeObject", function() {
   });
   it("makes a rule_decl with no params", function() {
     const v = make(["$.M() = 123"]);
-    const ev = Map.of("M", Map.of(1, Map.of(undefined, expr123)));
+    const ev = Map.of("M", Map.of(0, Map.of(undefined, expr123)));
     expect(v).toEqual(ev);
   });
   it("makes a rule_decl with an unmatched param", function() {
     const v = make(["$.M(a) = 123"]);
-    var ev = Map.of("M", Map.of(2, Map.of(undefined, expr123)));
+    var ev = Map.of("M", Map.of(1, Map.of(undefined, expr123)));
     expect(v).toEqual(ev);
   });
   it("makes a rule_decl with a matched param", function() {
     const v = make(["$.M(a: 8) = 123"]);
-    var ev = Map.of("M", Map.of(2, Map.of(8, expr123)));
+    var ev = Map.of("M", Map.of(1, Map.of(8, expr123)));
     expect(v).toEqual(ev);
   });
   it("combines rules at name map", function() {
     const v = make(["$.M(a) = 123", "$.N() = 321"]);
     const ev = Map.of(
       "M",
-      Map.of(2, Map.of(undefined, expr123)),
+      Map.of(1, Map.of(undefined, expr123)),
       "N",
-      Map.of(1, Map.of(undefined, expr321))
+      Map.of(0, Map.of(undefined, expr321))
     );
     expect(v).toEqual(ev);
   });
@@ -62,23 +62,23 @@ describe("makeObject", function() {
     const v = make(["$.M(a) = 123", "$.M() = 321"]);
     const ev = Map.of(
       "M",
-      Map.of(2, Map.of(undefined, expr123), 1, Map.of(undefined, expr321))
+      Map.of(1, Map.of(undefined, expr123), 0, Map.of(undefined, expr321))
     );
     expect(v).toEqual(ev);
   });
   it("combines rules at parameter map", function() {
     const v = make(["$.M(a) = 123", "$.M(a: 55) = 321"]);
-    const ev = Map.of("M", Map.of(2, Map.of(undefined, expr123, 55, expr321)));
+    const ev = Map.of("M", Map.of(1, Map.of(undefined, expr123, 55, expr321)));
     expect(v).toEqual(ev);
   });
   it("makes the rhs", function() {
-    const a = Map({ Param: 1 });
-    const b = Map({ Param: 2 });
+    const a = Map({ Param: 2 });
+    const b = Map({ Param: 3 });
     const vA = make(["$.M(a, b) = a"]);
-    const evA = Map.of("M", Map.of(3, Map.of(undefined, a)));
+    const evA = Map.of("M", Map.of(2, Map.of(undefined, a)));
     expect(vA).toEqual(evA);
     const vB = make(["$.M(a, b) = b"]);
-    const evB = Map.of("M", Map.of(3, Map.of(undefined, b)));
+    const evB = Map.of("M", Map.of(2, Map.of(undefined, b)));
     expect(vB).toEqual(evB);
   });
   it("makes a positive number value", function() {
@@ -111,7 +111,7 @@ describe("makeObject", function() {
     const ev = Map.of(0, undefined);
     expect(v).toEqual(ev);
   });
-  it("makes a path value", function() {
+  it("makes a name value", function() {
     const v = make(["$[0] = ABC"]);
     const ev = Map.of(0, "ABC");
     expect(v).toEqual(ev);
@@ -150,148 +150,177 @@ describe("makeExpr", function() {
   };
   it("makes x || y", function() {
     const v = make("x || y");
-    const ev = Map({ Call: "Lor", Args: List([x, y]) });
+    const m = Map({ Val: "Lor" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x && y", function() {
     const v = make("x && y");
-    const ev = Map({ Call: "Land", Args: List([x, y]) });
+    const m = Map({ Val: "Land" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x == y", function() {
     const v = make("x == y");
-    const ev = Map({ Call: "Eq", Args: List([x, y]) });
+    const m = Map({ Val: "Eq" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x != y", function() {
     const v = make("x != y");
-    const ev = Map({ Call: "Ne", Args: List([x, y]) });
+    const m = Map({ Val: "Ne" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x < y", function() {
     const v = make("x < y");
-    const ev = Map({ Call: "Lt", Args: List([x, y]) });
+    const m = Map({ Val: "Lt" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x <= y", function() {
     const v = make("x <= y");
-    const ev = Map({ Call: "Le", Args: List([x, y]) });
+    const m = Map({ Val: "Le" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x > y", function() {
     const v = make("x > y");
-    const ev = Map({ Call: "Gt", Args: List([x, y]) });
+    const m = Map({ Val: "Gt" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x >= y", function() {
     const v = make("x >= y");
-    const ev = Map({ Call: "Ge", Args: List([x, y]) });
+    const m = Map({ Val: "Ge" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x in y", function() {
     const v = make("x in y");
-    const ev = Map({ Call: "Has", Args: List([y, x]) });
+    const m = Map({ Val: "Has" });
+    const ev = Map({ Call: List([y, m, x]) });
     expect(v).toEqual(ev);
   });
   it("makes x + y", function() {
     const v = make("x + y");
-    const ev = Map({ Call: "Add", Args: List([x, y]) });
+    const m = Map({ Val: "Add" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x - y", function() {
     const v = make("x - y");
-    const ev = Map({ Call: "Sub", Args: List([x, y]) });
+    const m = Map({ Val: "Sub" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x | y", function() {
     const v = make("x | y");
-    const ev = Map({ Call: "Or", Args: List([x, y]) });
+    const m = Map({ Val: "Or" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x ^ y", function() {
     const v = make("x ^ y");
-    const ev = Map({ Call: "Xor", Args: List([x, y]) });
+    const m = Map({ Val: "Xor" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x * y", function() {
     const v = make("x * y");
-    const ev = Map({ Call: "Mul", Args: List([x, y]) });
+    const m = Map({ Val: "Mul" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x / y", function() {
     const v = make("x / y");
-    const ev = Map({ Call: "Div", Args: List([x, y]) });
+    const m = Map({ Val: "Div" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x % y", function() {
     const v = make("x % y");
-    const ev = Map({ Call: "Rem", Args: List([x, y]) });
+    const m = Map({ Val: "Rem" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x ** y", function() {
     const v = make("x ** y");
-    const ev = Map({ Call: "Pow", Args: List([x, y]) });
+    const m = Map({ Val: "Pow" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x ++ y", function() {
     const v = make("x ++ y");
-    const ev = Map({ Call: "Concat", Args: List([x, y]) });
+    const m = Map({ Val: "Concat" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x << y", function() {
     const v = make("x << y");
-    const ev = Map({ Call: "Lsh", Args: List([x, y]) });
+    const m = Map({ Val: "Lsh" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x >> y", function() {
     const v = make("x >> y");
-    const ev = Map({ Call: "Rsh", Args: List([x, y]) });
+    const m = Map({ Val: "Rsh" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x >>> y", function() {
     const v = make("x >>> y");
-    const ev = Map({ Call: "Zrsh", Args: List([x, y]) });
+    const m = Map({ Val: "Zrsh" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes x & y", function() {
     const v = make("x & y");
-    const ev = Map({ Call: "And", Args: List([x, y]) });
+    const m = Map({ Val: "And" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes !x", function() {
     const v = make("!x");
-    const ev = Map({ Call: "Lnot", Args: List([x]) });
+    const m = Map({ Val: "Lnot" });
+    const ev = Map({ Call: List([x, m]) });
     expect(v).toEqual(ev);
   });
   it("makes -x", function() {
     const v = make("-x");
-    const ev = Map({ Call: "Neg", Args: List([x]) });
+    const m = Map({ Val: "Neg" });
+    const ev = Map({ Call: List([x, m]) });
     expect(v).toEqual(ev);
   });
   it("makes ~x", function() {
     const v = make("~x");
-    const ev = Map({ Call: "Not", Args: List([x]) });
+    const m = Map({ Val: "Not" });
+    const ev = Map({ Call: List([x, m]) });
     expect(v).toEqual(ev);
   });
   it("makes a get_expr", function() {
     const v = make("x[y]");
-    const ev = Map({ Call: "Get", Args: List([x, y]) });
+    const m = Map({ Val: "Get" });
+    const ev = Map({ Call: List([x, m, y]) });
     expect(v).toEqual(ev);
   });
   it("makes a load_expr", function() {
     const v = make("x#");
-    const ev = Map({ Call: "Load", Args: List([x]) });
+    const m = Map({ Val: "Load" });
+    const ev = Map({ Call: List([x, m]) });
     expect(v).toEqual(ev);
   });
   it("makes a constructor_expr", function() {
     const v = make("x(y, z)");
-    const p = Map({ Call: "Load", Args: List([x]) });
-    const ev = Map({ Call: "New", Args: List([p, y, z]) });
+    const mLoad = Map({ Val: "Load" });
+    const p = Map({ Call: List([x, mLoad]) });
+    const mNew = Map({ Val: "New" });
+    const ev = Map({ Call: List([p, mNew, y, z]) });
     expect(v).toEqual(ev);
   });
   it("makes a call_expr", function() {
-    const v = make("x.M(y, z)");
-    const ev = Map({ Call: "M", Args: List([x, y, z]) });
+    const v = make("w.x(y, z)");
+    const ev = Map({ Call: List([w, x, y, z]) });
     expect(v).toEqual(ev);
   });
   it("makes a positive number", function() {
@@ -330,15 +359,9 @@ describe("makeExpr", function() {
     expect(v).toEqual(ev);
   });
   it("makes a name expression", function() {
-    const v1 = make("Aaz_09");
-    const ev1 = Map({ Val: "Aaz_09" });
-    expect(v1).toEqual(ev1);
-    const v2 = make("Aaz_09Baz_09");
-    const ev2 = Map({ Val: "Aaz_09Baz_09" });
-    expect(v2).toEqual(ev2);
-    const v3 = make("Aaz_09Baz_09Caz_09");
-    const ev3 = Map({ Val: "Aaz_09Baz_09Caz_09" });
-    expect(v3).toEqual(ev3);
+    const v = make("AbcDef");
+    const ev = Map({ Val: "AbcDef" });
+    expect(v).toEqual(ev);
   });
   it("makes a function expression", function() {
     const v = make("#!/abc");
@@ -356,36 +379,39 @@ describe("makeExpr", function() {
     expect(v).toEqual(ev);
   });
   it("makes a list", function() {
+    const mPush = Map({ Val: "Push" });
     const v0 = make("[]");
     const ev0 = Map({ Val: List([]) });
     expect(v0).toEqual(ev0);
     const v1 = make("[x]");
-    const ev1 = Map({ Call: "Push", Args: List([ev0, x]) });
+    const ev1 = Map({ Call: List([ev0, mPush, x]) });
     expect(v1).toEqual(ev1);
     const v2 = make("[x, y]");
-    const ev2 = Map({ Call: "Push", Args: List([ev1, y]) });
+    const ev2 = Map({ Call: List([ev1, mPush, y]) });
     expect(v2).toEqual(ev2);
   });
   it("makes a map", function() {
+    const mSet = Map({ Val: "Set" });
     const v0 = make("{}");
     const ev0 = Map({ Val: Map({}) });
     expect(v0).toEqual(ev0);
     const v1 = make("{w: x}");
-    const ev1 = Map({ Call: "Set", Args: List([ev0, w, x]) });
+    const ev1 = Map({ Call: List([ev0, mSet, w, x]) });
     expect(v1).toEqual(ev1);
     const v2 = make("{w: x, y: z}");
-    const ev2 = Map({ Call: "Set", Args: List([ev1, y, z]) });
+    const ev2 = Map({ Call: List([ev1, mSet, y, z]) });
     expect(v2).toEqual(ev2);
   });
   it("makes a set", function() {
+    const mAdd = Map({ Val: "Add" });
     const v0 = make("#{}");
     const ev0 = Map({ Val: Set([]) });
     expect(v0).toEqual(ev0);
     const v1 = make("#{x}");
-    const ev1 = Map({ Call: "Add", Args: List([ev0, x]) });
+    const ev1 = Map({ Call: List([ev0, mAdd, x]) });
     expect(v1).toEqual(ev1);
     const v2 = make("#{x, y}");
-    const ev2 = Map({ Call: "Add", Args: List([ev1, y]) });
+    const ev2 = Map({ Call: List([ev1, mAdd, y]) });
     expect(v2).toEqual(ev2);
   });
 });

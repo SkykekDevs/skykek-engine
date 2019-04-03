@@ -247,6 +247,9 @@ describe("checkExpr", function() {
     expect(function() {
       check("a.M()");
     }).toThrow("undefined parameter a");
+    expect(function() {
+      check("A.b()");
+    }).toThrow("undefined parameter b");
     const expr32 = range(32).map(x => x.toString());
     expect(function() {
       check("A.M(" + expr32.join(", ") + ")");

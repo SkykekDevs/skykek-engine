@@ -48,13 +48,13 @@ describe("compileObject", function() {
   it("renames relative class names", function() {
     const v = compileObject("A", "B", "$.M() = @C");
     const expr = Map({ Val: "AC" });
-    const obj = Map.of("M", Map.of(1, Map.of(undefined, expr)));
+    const obj = Map.of("M", Map.of(0, Map.of(undefined, expr)));
     expect(v).toEqual(obj);
   });
   it("makes and returns the object", function() {
     const v = compileObject("A", "B", "$.M() = 123");
     const expr = Map({ Val: 123 });
-    const obj = Map.of("M", Map.of(1, Map.of(undefined, expr)));
+    const obj = Map.of("M", Map.of(0, Map.of(undefined, expr)));
     expect(v).toEqual(obj);
   });
 });

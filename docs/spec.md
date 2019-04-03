@@ -374,15 +374,15 @@
     $.Color(fruit: "banana") = "yellow"
     $.Color(fruit) = "green"
 
- The code says that if a call is made to the `Color` method with 2 parameters (`$` and `fruit`) and if the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is equal to `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
+ The code says that if a call is made to the `Color` method with 1 parameter (`fruit`) and if the last parameter (i.e. `fruit`) is equal to `"apple"`, then we return the value `"red"`. If instead the last parameter is equal to `"banana"`, we return `"yellow"`. Finally, if the last parameter doesn't match either of those two choices, we return "green".
 
- In the map generated from the source code, this method is an entry with key `"color"` and value
+ In the map generated from the source code, this method is an entry with key `"Color"` and value
 
     {
-      2: {
-        "apple": {"val": "red"},
-        "banana": {"val": "yellow"},
-        undefined: {"val": "green"}
+      1: {
+        "apple": {Val: "red"},
+        "banana": {Val: "yellow"},
+        undefined: {Val: "green"}
       }
     }
 
@@ -392,12 +392,12 @@
 | --- | ---
 | `{Val: "red"}` | the value `"red"`
 | `{Param: 0}` | `$`
-| `{Param: 3}` | the parameter at index 3
-| `{Call: M, Args: list}` | a call to the method named `M` with a list of arguments
+| `{Param: 2}` | the first parameter (parameter 1 is the method name)
+| `{Call: [{Val: "abc"}, {Val: Concat}, {Val: "def"}]}` | `"abc".Concat("def")`
 
- As a programmer you typically don't have to worry about the internal representation of methods. After all, the interpreter takes care of compiling your source code into objects. However, it's good to remember that methods are just map entries, and therefore can be created and called at run-time:
+ As a programmer you typically don't have to worry about the internal representation of methods. After all, the interpreter takes care of compiling your source code into objects. However, it's good to remember that methods are just map entries, and therefore can be created at run-time:
 
-    {Agree: {2: {true: {Val: "Yes!"}, false: {Val: "No!"}}}}.Agree(true)
+    {Agree: {1: {true: {Val: "Yes!"}, false: {Val: "No!"}}}}.Agree(true)
 
  The expression above evaluates to `"Yes!"`.
 
@@ -405,13 +405,14 @@
 
 ### An example: `$.Sum(list)` 
 
- The method in the previous example merely associates a fruit name to a color. But even though graph rewriting is the only form of computation we have access to, we can still implement less trivial methods. The main trick in Keklang is for a method to call itself with a different pattern. Here is a method that adds the elements of a list:
+ The method in the previous example merely associates a fruit name to a color. But we can implement less trivial methods. The main trick in Keklang is for a method to call itself again with a different pattern, usually with more parameters. Here is a method that adds the elements of a list:
 
     $.Sum(list) = $.Sum(list, list.isEmpty())
     $.Sum(list, isEmpty: true) = 0
     $.Sum(list, isEmpty: false) = list.First() + $.Sum(list.Rest())
 
  Notice how the number of parameters varies during the computation.
+
 
 ### The `New` method
 

@@ -42,6 +42,7 @@ describe("renameExpr()", function() {
   };
   const MA = ["name_expr", "MA"];
   const MB = ["name_expr", "MB"];
+  const MC = ["name_expr", "MC"];
   it("renames a binary_expr", function() {
     const v = rename("@A && @B");
     const ev = ["binary_expr", MA, "&&", MB];
@@ -68,8 +69,8 @@ describe("renameExpr()", function() {
     expect(v).toEqual(ev);
   });
   it("renames a call_expr", function() {
-    const v = rename("@A.@C(@B)");
-    const ev = ["call_expr", MA, ".", "MC", "(", [MB], ")"];
+    const v = rename("@A.@B(@C)");
+    const ev = ["call_expr", MA, ".", MB, "(", [MC], ")"];
     expect(v).toEqual(ev);
   });
   it("renames a name_expr", function() {

@@ -32,6 +32,13 @@ describe("evaluate", function() {
       ev("C#.M()", classes);
     }).toThrow("no matching rule found");
   });
+  it('throws "invalid method name" on call with bad method name', function() {
+    const obj = compileObject("", "C", "$.M(x) = 3");
+    const classes = iMap.of("C", obj);
+    expect(function() {
+      ev("C#.(3)()", classes);
+    }).toThrow("invalid method name");
+  });
   it("evaluates calls", function() {
     const obj = compileObject("", "C", "$.M() = 3");
     const classes = iMap.of("C", obj);
@@ -41,7 +48,7 @@ describe("evaluate", function() {
     const obj = compileObject(
       "",
       "C",
-      "$.M() = {N: {1: {undefined: {Val: 4}}}}.N()"
+      "$.M() = {N: {0: {undefined: {Val: 4}}}}.N()"
     );
     const classes = iMap.of("C", obj);
     expect(ev("C#.M()", classes)).toEqual(4);
@@ -50,7 +57,7 @@ describe("evaluate", function() {
     const obj = compileObject(
       "",
       "C",
-      '$.M() = {"x": 4, Get: {2: {"x": {Val: 5}}}}.Get("x")'
+      '$.M() = {"x": 4, Get: {1: {"x": {Val: 5}}}}.Get("x")'
     );
     const classes = iMap.of("C", obj);
     expect(ev("C#.M()", classes)).toEqual(5);
@@ -162,73 +169,61 @@ describe("allocate", function() {
     const classes = iMap.of("C", iMap({ p: 123 }));
     return evaluate(expr, classes);
   };
-  it("supports call expressions with wrongly-typed method name", function() {
-    const args = '[{Val: {"p": 4}}, {Val: "p"}]';
-    const call = "{Call: 33, Args: " + args + "}";
-    const v = ev('{"M": {1: {undefined: ' + call + "}}}.M()");
-    expect(v).toEqual(undefined);
-  });
-  it("supports call expressions with wrongly-named method", function() {
-    const args = '[{Val: {"p": 4}}, {Val: "p"}]';
-    const call = '{Call: "...", Args: ' + args + "}";
-    const v = ev('{"M": {1: {undefined: ' + call + "}}}.M()");
-    expect(v).toEqual(undefined);
-  });
   it("supports call expressions with wrongly-typed arg list", function() {
-    const call = "{Call: Get, Args: 33}";
-    const v = ev('{"M": {1: {undefined: ' + call + "}}}.M()");
+    const call = "{Call: 33}";
+    const v = ev('{"M": {0: {undefined: ' + call + "}}}.M()");
     expect(v).toEqual(undefined);
   });
-  it("supports call expressions with empty arg list", function() {
-    const call = "{Call: Get, Args: []}";
-    const v = ev('{"M": {1: {undefined: ' + call + "}}}.M()");
+  it("supports call expressions with too small arg list", function() {
+    const call = '{Call: [{Val: {"p": 4}}]}';
+    const v = ev('{"M": {0: {undefined: ' + call + "}}}.M()");
     expect(v).toEqual(undefined);
   });
   it("supports well-formed call expressions", function() {
-    const args = '[{Val: {"p": 4}}, {Val: "p"}]';
-    const call = "{Call: Get, Args: " + args + "}";
-    const v = ev('{"M": {1: {undefined: ' + call + "}}}.M()");
+    const args = '[{Val: {"p": 4}}, {Val: Get}, {Val: "p"}]';
+    const call = "{Call: " + args + "}";
+    const v = ev('{"M": {0: {undefined: ' + call + "}}}.M()");
     expect(v).toEqual(4);
   });
   it("supports param expressions with wrongly-typed index", function() {
-    const v = ev('{"M": {2: {undefined: {Param: "abc"}}}}.M(4)');
+    const v = ev('{"M": {1: {undefined: {Param: "abc"}}}}.M(4)');
     expect(v).toEqual(undefined);
   });
   it("supports param expressions with index that is too low", function() {
-    const v = ev('{"M": {2: {undefined: {Param: -1}}}}.M(4)');
+    const v = ev('{"M": {1: {undefined: {Param: -1}}}}.M(4)');
     expect(v).toEqual(undefined);
   });
   it("supports param expressions with index that is too high", function() {
-    const v = ev('{"M": {2: {undefined: {Param: 2}}}}.M(4)');
+    const v = ev('{"M": {1: {undefined: {Param: 3}}}}.M(4)');
     expect(v).toEqual(undefined);
   });
   it("supports well-formed param expressions", function() {
-    const v = ev('{"M": {2: {undefined: {Param: 1}}}}.M(4)');
+    const v = ev('{"M": {1: {undefined: {Param: 2}}}}.M(4)');
     expect(v).toEqual(4);
   });
   it("supports func expressions with bad name", function() {
     const expr = '{Func: "qwertyuio"}';
-    const v = ev('{"M": {3: {undefined: ' + expr + "}}}.M(2, 3)");
+    const v = ev('{"M": {2: {undefined: ' + expr + "}}}.M(2, 3)");
     expect(v).toEqual(undefined);
   });
   it("supports func expressions with wrong number of arguments", function() {
     const expr = '{Func: "add"}';
-    const v = ev('{"M": {4: {undefined: ' + expr + "}}}.M(2, 3, 4)");
+    const v = ev('{"M": {3: {undefined: ' + expr + "}}}.M(2, 3, 4)");
     expect(v).toEqual(undefined);
   });
   it("supports func expressions", function() {
     const expr = '{Func: "abs"}';
-    const v = ev('{"M": {2: {undefined: ' + expr + "}}}.M(-5)");
+    const v = ev('{"M": {1: {undefined: ' + expr + "}}}.M(-5)");
     expect(v).toEqual(5);
   });
   it("supports val expressions", function() {
-    const v = ev('{"M": {1: {undefined: {Val: 4}}}}.M()');
+    const v = ev('{"M": {0: {undefined: {Val: 4}}}}.M()');
     expect(v).toEqual(4);
   });
   it("supports malformed expressions", function() {
-    const vEmptyMap = ev('{"M": {1: {undefined: {}}}}.M()');
+    const vEmptyMap = ev('{"M": {0: {undefined: {}}}}.M()');
     expect(vEmptyMap).toEqual(undefined);
-    const vNoMap = ev('{"M": {1: {undefined: 1234}}}.M()');
+    const vNoMap = ev('{"M": {0: {undefined: 1234}}}.M()');
     expect(vNoMap).toEqual(undefined);
   });
 });

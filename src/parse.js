@@ -154,7 +154,7 @@ function parseCExpr(s) {
         "call_expr",
         expr,
         s.tk("."),
-        s.tk("uc"),
+        parseAExpr(s),
         s.tk("("),
         parseArgs(s),
         s.tk(")")
