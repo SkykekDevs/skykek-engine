@@ -63,6 +63,10 @@
 
  Returns a string representing `x`. **radix** is an integer between 2 and 36 specifying the base to use. If the argument is omitted, defaults to 10.
 
+## `x.ToNumber()`
+
+ Returns `x`.
+
 ## `x.Type()`
 
  Returns `"number"`.

@@ -191,6 +191,11 @@ const BUILTIN = {
         return a[0].toString(a[1]);
       }
     },
+    ToNumber: {
+      1: function(a) {
+        return a[0];
+      }
+    },
     Type: {
       1: function(a) {
         return "number";

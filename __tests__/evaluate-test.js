@@ -396,6 +396,9 @@ describe("number", function() {
     expect(ev("(7).ToString(1)")).toEqual(undefined);
     expect(ev("(47).ToString(37)")).toEqual(undefined);
   });
+  it("implements ToNumber()", function() {
+    expect(ev("(7).ToNumber()")).toEqual(7);
+  });
   it("implements Type()", function() {
     expect(ev("3.Type()")).toEqual("number");
   });
